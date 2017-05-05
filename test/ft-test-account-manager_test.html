@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>ft-test-account-manager Test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../ft-test-account-manager.html">
+</head>
+<body>
+<test-fixture id="basic">
+    <template>
+        <ft-test-account-manager></ft-test-account-manager>
+    </template>
+</test-fixture>
+
+<script>
+    suite('ft-test-account-manager', function()
+    {
+        test('instantiating the element works', function()
+        {
+            var element = fixture('basic');
+            assert.equal(element.is, 'ft-test-account-manager');
+        });
+    });
+</script>
+</body>
+</html>
