@@ -1,23 +1,259 @@
-<link rel="import" href="../polymer/polymer.html">
+<!--
+Copyright 2017 FileThis, Inc.
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<script src="../uuid/uuid.js"></script>
+<script src="../validator-js/validator.js"></script>
+
+<link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
+<link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
+<link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
+
+<link rel="import" href="custom-validator.html">
+
 
 <!--
 `ft-test-account-manager`
-An element that allows partner admins to create user accounts for testing. Also allows the creation of access tickets for the account.
-
-@demo demo/index.html
+An element that provides an easy way for an partner admin to create and delete user test accounts, and to create and
+delete access tickets for the accounts. It saves settings and the current account and ticket in browser local storage
+for convenience. Stored secrets can be cleared from storage at will.
 -->
 
 <dom-module id="ft-test-account-manager">
 
     <style include="iron-flex iron-flex-alignment"></style>
 
+    <style>
+        paper-button
+        {
+            height:30px;
+        }
+        paper-button iron-icon
+        {
+            width:20px;
+            padding-right:5px;
+        }
+        .section-space
+        {
+            height:30px;
+        }
+        .field-to-buttons-space
+        {
+            width:30px;
+        }
+        .inter-button-space
+        {
+            width:20px;
+        }
+    </style>
+
     <template>
 
-        <div>
-            ft-test-account-manager
+        <div class="layout vertical"
+             style="width:450px;
+                    padding:35px;
+                    background-color:white;
+                    border:1px solid #DDD;">
+
+            <!-- Server -->
+
+            <div style="font-size:16pt" hidden$="[[!showServer]]">Server</div>
+
+            <div class="layout horizontal center" style="width:100%;" hidden$="[[!showServer]]">
+
+                <!-- Server -->
+                <custom-validator id="urlValidator" validator-name="url-validator"></custom-validator>
+                <paper-input id="serverField"
+                             value="{{server}}"
+                             label="URL"
+                             auto-validate
+                             validator="url-validator"
+                             error-message="Must be a valid URL"
+                             style="width:100%;">
+                </paper-input>
+
+                <div class="field-to-buttons-space"></div>
+
+                <!-- Default button -->
+                <paper-button dialog-confirm raised
+                              id="defaultServerButton"
+                              disabled$="[[!_canSetDefaultServer]]"
+                              style="width:130px"
+                              on-click="_onDefaultServerButtonClicked">
+                    <iron-icon icon="settings-backup-restore"></iron-icon>
+                    Default
+                </paper-button>
+
+            </div>
+
+            <div class="section-space" hidden$="[[!showServer]]"></div>
+
+            <!-- Partner Credentials -->
+
+            <div style="font-size:16pt">Partner Credentials</div>
+
+            <custom-validator id="alphanumericValidator" validator-name="alphanumeric-validator"></custom-validator>
+
+            <!-- API Key -->
+            <paper-input id="apiKeyField"
+                         autofocus
+                         label="API Key"
+                         value="{{apiKey}}"
+                         type="[[_computeInputType(_showSecrets)]]"
+                         auto-validate
+                         validator="alphanumeric-validator"
+                         error-message="Must be an alphanumeric string"
+                         char-counter
+                         style="width:100%;">
+            </paper-input>
+
+            <!-- API Secret -->
+            <paper-input id="apiSecretField"
+                         autofocus
+                         label="API Secret"
+                         value="{{apiSecret}}"
+                         type="[[_computeInputType(_showSecrets)]]"
+                         auto-validate
+                         validator="alphanumeric-validator"
+                         error-message="Must be an alphanumeric string"
+                         char-counter
+                         style="width:100%;">
+            </paper-input>
+
+            <div class="section-space"></div>
+
+            <!-- User Account -->
+
+            <div style="font-size:16pt">User Account</div>
+
+            <div class="layout horizontal center" style="width:100%;">
+
+                <!-- User acccount id -->
+                <paper-input id="userAccountIdField"
+                             autofocus
+                             label="Id"
+                             value="{{userAccountId}}"
+                             auto-validate
+                             pattern="[0-9]+"
+                             error-message="Not a valid FileThis acccount id"
+                             style="width:100%;">
+                </paper-input>
+
+                <div class="field-to-buttons-space"></div>
+
+                <!-- Delete Account button -->
+                <paper-button dialog-confirm raised
+                              id="deleteAccountButton"
+                              disabled$="[[!_canDeleteUserAccount]]"
+                              style="width:150px"
+                              on-click="_onDeleteAccountButtonClicked">
+                    <iron-icon icon="remove-circle-outline"></iron-icon>
+                    Delete
+                </paper-button>
+
+                <div class="inter-button-space"></div>
+
+                <!-- Create Account button -->
+                <paper-button dialog-confirm raised
+                              id="createAccountButton"
+                              disabled$="[[!_canCreateUserAccount]]"
+                              on-click="_onCreateAccountButtonClicked">
+                    <iron-icon icon="add"></iron-icon>
+                    New
+                </paper-button>
+
+            </div>
+
+            <div class="section-space"></div>
+
+            <!-- User Access Ticket -->
+
+            <div style="font-size:16pt">User Access Ticket</div>
+
+            <div class="layout horizontal center" style="width:100%;">
+
+                <!-- Ticket -->
+                <paper-input id="ticketField"
+                             autofocus
+                             label="Ticket"
+                             value="{{ticket}}"
+                             type="[[_computeInputType(_showSecrets)]]"
+                             char-counter
+                             style="width:100%;">
+                </paper-input>
+
+                <div class="field-to-buttons-space"></div>
+
+                <!-- Delete Ticket button -->
+                <paper-button dialog-confirm raised
+                              id="deleteTicketButton"
+                              disabled$="[[!_canDeleteTicket]]"
+                              style="width:150px"
+                              on-click="_onDeleteTicketButtonClicked">
+                    <iron-icon icon="remove-circle-outline"></iron-icon>
+                    Delete
+                </paper-button>
+
+                <div class="inter-button-space"></div>
+
+                <!-- Create Ticket button -->
+                <paper-button dialog-confirm raised
+                              id="createTicketButton"
+                              disabled$="[[!_canCreateTicket]]"
+                              on-click="_onCreateTicketButtonClicked">
+                    <iron-icon icon="add"></iron-icon>
+                    New
+                </paper-button>
+
+            </div>
+
+            <div class="section-space"></div>
+
+            <!-- Commit buttons -->
+            <div class="layout horizontal center" style="width:100%;">
+
+                <!-- Show Secrets checkbox -->
+                <paper-checkbox
+                        checked="{{_showSecrets}}">
+                    Show Secrets
+                </paper-checkbox>
+
+                <div class="flex"></div>
+
+                <!-- Clear Stored Secrets button -->
+                <paper-button dialog-confirm raised
+                              id="clearSecretsButton"
+                              disabled$="[[!_canClearSecrets]]"
+                              on-click="_onClearSecretsButtonClicked">
+                    Clear Stored Secrets
+                </paper-button>
+
+            </div>
+
         </div>
+
+        <!-- Confirmation dialog -->
+        <ft-confirmation-dialog id="confirmationDialog"></ft-confirmation-dialog>
 
     </template>
 
@@ -26,9 +262,482 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             is: 'ft-test-account-manager',
 
+            behaviors: [FtErrorBehavior, FtHttpBehavior],
+
             properties: {
+
+                /** The Partner API key. */
+                apiKey: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onFieldChanged"
+                },
+
+                /** The Partner API secret. */
+                apiSecret: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onFieldChanged"
+                },
+
+                /** The user's FileThis account id. */
+                userAccountId: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onFieldChanged"
+                },
+
+                /** The user's FileThis ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
+                ticket: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onFieldChanged"
+                },
+
+                ticketId: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+
+                /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
+                showServer: {
+                    type: Boolean,
+                    notify: true,
+                    value: true
+                },
+
+                /** The FileThis server URL. Used by FileThis for testing against non-production servers. Defaults to value of _defaultServer_ property. */
+                server: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onFieldChanged"
+                },
+
+                /** The default server URL. Used by FileThis for testing against non-production servers. */
+                defaultServer: {
+                    type: String,
+                    notify: false,
+                    readOnly: true,
+                    value: "https://filethis.com"
+                },
+
+
+                // Properties that enable/disable buttons ---------------------------------------------------
+
+                _canSetDefaultServer: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _canCreateUserAccount: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _canDeleteUserAccount: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _canCreateTicket: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _canDeleteTicket: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _canClearSecrets: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+
+                _showSecrets: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                _suppressWriteToLocalStorage: {
+                    type: Boolean,
+                    notify: true,
+                    value: true
+                }
+            },
+
+            // Startup -------------------------------------------------------------------------------------
+
+            ready: function()
+            {
+                this.$.urlValidator.validate = this._validateUrl.bind(this);
+                this.$.alphanumericValidator.validate = this._validateAlphanumeric.bind(this);
+
+                this._readFromLocalStorage();
+                this._enableOrDisableButtons();
+            },
+
+
+            // Validation functions ---------------------------------------------------
+
+            _validateUrl: function(value)
+            {
+                if (!value)
+                    return true;
+                var options =
+                    {
+                        protocols: ["http", "https"],
+                        require_protocol: true
+                    };
+                return validator.isURL(value, options);
+            },
+
+            _validateAlphanumeric: function(value)
+            {
+                if (!value)
+                    return true;
+                return validator.isAlphanumeric(value);
+            },
+
+
+            // Updating button enable/disable properties ---------------------------------------------------
+
+            _checkCanSetDefaultServer: function()
+            {
+                if (!this.server)
+                    return true;
+                if (this.server != this.defaultServer)
+                    return true;
+                return false;
+            },
+
+            _checkCanUseServer: function()
+            {
+                if (!this.server)
+                    return false;
+                if (this.$.serverField.invalid)
+                    return false;
+
+                return true;
+            },
+
+            _checkCanUsePartnerCredentials: function()
+            {
+                if (!this._checkCanUseServer())
+                    return false;
+
+                if (!this.apiKey)
+                    return false;
+                if (this.$.apiKeyField.invalid)
+                    return false;
+
+                if (!this.apiSecret)
+                    return false;
+                if (this.$.apiSecretField.invalid)
+                    return false;
+
+                return true;
+            },
+
+            _checkCanUseUserAccount: function()
+            {
+                if (!this._checkCanUsePartnerCredentials())
+                    return false;
+
+                if (!this.userAccountId)
+                    return false;
+                if (this.$.userAccountIdField.invalid)
+                    return false;
+
+                return true;
+            },
+
+            _checkCanUseTicket: function()
+            {
+                if (!this._checkCanUseUserAccount())
+                    return false;
+
+                if (!this.ticket)
+                    return false;
+                if (this.$.ticketField.invalid)
+                    return false;
+
+                return true;
+            },
+
+            _checkCanClearSecrets: function()
+            {
+                if (this.apiKey)
+                    return true;
+                if (this.apiSecret)
+                    return true;
+                if (this.ticket)
+                    return true;
+                if (this.userAccountId)
+                    return true;
+                return false;
+            },
+
+            _enableOrDisableButtons: function()
+            {
+                this._canSetDefaultServer = this._checkCanSetDefaultServer();
+                this._canCreateUserAccount = this._checkCanUsePartnerCredentials();
+                this._canDeleteUserAccount = this._checkCanUseUserAccount();
+                this._canCreateTicket = this._checkCanUseUserAccount();
+                this._canDeleteTicket = this._checkCanUseTicket();
+                this._canClearSecrets = this._checkCanClearSecrets();
+            },
+
+            _onFieldChanged: function()
+            {
+                this._writeToLocalStorage();
+                this._enableOrDisableButtons();
+            },
+
+            _computeInputType: function(showSecrets)
+            {
+                if (showSecrets)
+                    return "text";
+                else
+                    return "password";
+            },
+
+
+            // Local storage ----------------------------------------------------------------------------
+
+            _readFromLocalStorage: function()
+            {
+                this._suppressWriteToLocalStorage = true;
+                try
+                {
+                    var server = this._readFromLocalStorageSingle("server");
+                    if (server)
+                        this.server = server;
+                    else
+                        this.server = this.defaultServer;
+                    this.apiKey = this._readFromLocalStorageSingle("apiKey");
+                    this.apiSecret = this._readFromLocalStorageSingle("apiSecret");
+                    this.userAccountId = this._readFromLocalStorageSingle("userAccountId");
+                    this.ticket = this._readFromLocalStorageSingle("ticket");
+                    this.ticketId = this._readFromLocalStorageSingle("ticketId");
+                }
+                finally
+                {
+                    this._suppressWriteToLocalStorage = false;
+                }
+            },
+
+            _writeToLocalStorage: function()
+            {
+                if (this._suppressWriteToLocalStorage === undefined || this._suppressWriteToLocalStorage)
+                    return;
+                localStorage.setItem("server", this.server);
+                localStorage.setItem("apiKey", this.apiKey);
+                localStorage.setItem("apiSecret", this.apiSecret);
+                localStorage.setItem("ticket", this.ticket);
+                localStorage.setItem("ticketId", this.ticketId);
+                localStorage.setItem("userAccountId", this.userAccountId);
+            },
+
+            _readFromLocalStorageSingle: function(name)
+            {
+                var value = localStorage.getItem(name);
+                if (value == null)
+                    value = "";
+                return value;
+            },
+
+
+            // Button click handlers ----------------------------------------------------------------------------
+
+            _onDefaultServerButtonClicked: function(event, detail)
+            {
+                this.server = "https://filethis.com";
+            },
+
+            _onCreateAccountButtonClicked: function(event, detail)
+            {
+                Promise.resolve()
+                    .then(function()
+                    {
+                        const haveCurrentAccount = (this.userAccountId);
+                        if (haveCurrentAccount)
+                        {
+                            const prompt = "Creating a new user account will first delete the current one, if it still exists.\nDo you want do proceed?";
+                            return this.$.confirmationDialog.pose(prompt)
+                                .then(this._deleteUserAccount.bind(this))
+                                .catch(function(error) {})  // Ignore. Account was probably deleted by other means.
+                                .then(this._createUserAccount.bind(this));
+                        }
+
+                        return this._createUserAccount();
+                    }.bind(this))
+                    .then(function(response)
+                    {
+                        this.userAccountId = response.id;
+                    }.bind(this))
+                    .catch(function(reason)
+                    {
+                        this.handleCaughtError(reason);
+                    }.bind(this));
+            },
+
+            _onDeleteAccountButtonClicked: function(event, detail)
+            {
+                const prompt = "Are you sure you want to delete the user account?";
+                this.$.confirmationDialog.pose(prompt)
+                    .then(this._deleteUserAccount.bind(this))
+                    .catch(function(reason)
+                    {
+                        this.handleCaughtError(reason);
+                    }.bind(this));
+            },
+
+            _onCreateTicketButtonClicked: function(event, detail)
+            {
+                Promise.resolve()
+                    .then(function()
+                    {
+                        const haveCurrentTicket = (this.ticket);
+                        if (haveCurrentTicket)
+                        {
+                            const prompt = "Creating a new user access ticket will first delete the current one, if it still exists.\nDo you want do proceed?";
+                            return this.$.confirmationDialog.pose(prompt)
+                                .then(this._deleteTicket.bind(this))
+                                .catch(function(error) {})  // Ignore. Ticket likely time out.
+                                .then(this._createTicket.bind(this))
+                        }
+
+                        return this._createTicket();
+                    }.bind(this))
+                    .then(function(response)
+                    {
+                        this.ticket = response.ticket;
+                        this.ticketId = response.ticketId;
+                    }.bind(this))
+                    .catch(function(reason)
+                    {
+                        this.handleCaughtError(reason);
+                    }.bind(this));
+            },
+
+            _onDeleteTicketButtonClicked: function(event, detail)
+            {
+                const prompt = "Are you sure you want to delete the user access ticket?";
+                this.$.confirmationDialog.pose(prompt)
+                    .then(this._deleteTicket.bind(this))
+                    .catch(function(reason)
+                    {
+                        this.handleCaughtError(reason);
+                    }.bind(this));
+            },
+
+            _onClearSecretsButtonClicked: function(event, detail)
+            {
+                const prompt = "Are you sure you want to clear the secrets?";
+                this.$.confirmationDialog.pose(prompt)
+                    .then(this._clearSecrets.bind(this))
+                    .catch(function(reason)
+                    {
+                        this.handleCaughtError(reason);
+                    }.bind(this));
+            },
+
+            _clearSecrets: function()
+            {
+                // TODO: Prompt to delete account and ticket
+
+                this._suppressWriteToLocalStorage = true;
+                try
+                {
+                    this.apiKey = "";
+                    this.apiSecret = "";
+                    this.userAccountId = "";
+                    this.ticket = "";
+                    this.ticketId = "";
+                }
+                finally
+                {
+                    this._suppressWriteToLocalStorage = false;
+                }
+                this._writeToLocalStorage();
+            },
+
+
+            // Actions -------------------------------------------------------------------------------------
+
+            _deleteUserAccount: function()
+            {
+                const url = this.server + "/api/v1/accounts/" + this.userAccountId;
+                const options = this._buildHttpOptions();
+                return this.httpDelete(url, options);
+            },
+
+            _createUserAccount: function()
+            {
+                const url = this.server + "/api/v1/accounts/";
+                const partnerAccountId = this._generateGuid();
+                const body = {
+                    "partnerAccountId": partnerAccountId
+                };
+                const options = this._buildHttpOptions();
+                return this.httpPost(url, body, options);
+            },
+
+            _deleteTicket: function()
+            {
+                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tickets/" + this.ticketId;
+                const options = this._buildHttpOptions();
+                return this.httpDelete(url, options);
+            },
+
+            _createTicket: function()
+            {
+                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tickets/";
+                const body = {
+                    expiresIn: 120  // Two hours
+                };
+                const options = this._buildHttpOptions();
+                return this.httpPost(url, body, options);
+            },
+
+            _buildHttpOptions: function()
+            {
+                const authorizationValue = "Basic " + btoa(this.apiKey + ":" + this.apiSecret);
+
+                return {
+                    headers: {Authorization: authorizationValue}
+                };
+            },
+
+            _generateGuid: function()
+            {
+                function s4()
+                {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                        .toString(16)
+                        .substring(1);
+                }
+
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                    s4() + '-' + s4() + s4() + s4();
             }
 
         });
+
     </script>
 </dom-module>
