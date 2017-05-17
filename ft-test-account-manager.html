@@ -20,9 +20,7 @@ limitations under the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
 
-<script src="../uuid/uuid.js"></script>
 <script src="../validator-js/validator.js"></script>
 
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
@@ -47,11 +45,6 @@ for convenience. Stored secrets can be cleared from storage at will.
         paper-button
         {
             height:30px;
-        }
-        paper-button iron-icon
-        {
-            width:20px;
-            padding-right:5px;
         }
         .section-space
         {
@@ -98,9 +91,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <paper-button dialog-confirm raised
                               id="defaultServerButton"
                               disabled$="[[!_canSetDefaultServer]]"
-                              style="width:130px"
+                              style="width:100px"
                               on-click="_onDefaultServerButtonClicked">
-                    <iron-icon icon="settings-backup-restore"></iron-icon>
                     Default
                 </paper-button>
 
@@ -150,7 +142,7 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 <!-- User acccount id -->
                 <paper-input id="userAccountIdField"
-                             autofocus
+                             readonly
                              label="Id"
                              value="{{userAccountId}}"
                              auto-validate
@@ -165,9 +157,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <paper-button dialog-confirm raised
                               id="deleteAccountButton"
                               disabled$="[[!_canDeleteUserAccount]]"
-                              style="width:150px"
+                              style="width:110px"
                               on-click="_onDeleteAccountButtonClicked">
-                    <iron-icon icon="remove-circle-outline"></iron-icon>
                     Delete
                 </paper-button>
 
@@ -178,7 +169,6 @@ for convenience. Stored secrets can be cleared from storage at will.
                               id="createAccountButton"
                               disabled$="[[!_canCreateUserAccount]]"
                               on-click="_onCreateAccountButtonClicked">
-                    <iron-icon icon="add"></iron-icon>
                     New
                 </paper-button>
 
@@ -194,7 +184,6 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 <!-- Ticket -->
                 <paper-input id="ticketField"
-                             autofocus
                              label="Ticket"
                              value="{{ticket}}"
                              type="[[_computeInputType(_showSecrets)]]"
@@ -208,9 +197,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <paper-button dialog-confirm raised
                               id="deleteTicketButton"
                               disabled$="[[!_canDeleteTicket]]"
-                              style="width:150px"
+                              style="width:110px"
                               on-click="_onDeleteTicketButtonClicked">
-                    <iron-icon icon="remove-circle-outline"></iron-icon>
                     Delete
                 </paper-button>
 
@@ -221,7 +209,6 @@ for convenience. Stored secrets can be cleared from storage at will.
                               id="createTicketButton"
                               disabled$="[[!_canCreateTicket]]"
                               on-click="_onCreateTicketButtonClicked">
-                    <iron-icon icon="add"></iron-icon>
                     New
                 </paper-button>
 
@@ -291,17 +278,17 @@ for convenience. Stored secrets can be cleared from storage at will.
                 },
 
                 /** The user's FileThis ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
+                ticketId: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+
                 ticket: {
                     type: String,
                     notify: true,
                     value: "",
                     observer: "_onFieldChanged"
-                },
-
-                ticketId: {
-                    type: String,
-                    notify: true,
-                    value: ""
                 },
 
                 /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
@@ -532,8 +519,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     this.apiKey = this._readFromLocalStorageSingle("apiKey");
                     this.apiSecret = this._readFromLocalStorageSingle("apiSecret");
                     this.userAccountId = this._readFromLocalStorageSingle("userAccountId");
-                    this.ticket = this._readFromLocalStorageSingle("ticket");
                     this.ticketId = this._readFromLocalStorageSingle("ticketId");
+                    this.ticket = this._readFromLocalStorageSingle("ticket");
                 }
                 finally
                 {
@@ -548,8 +535,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                 localStorage.setItem("server", this.server);
                 localStorage.setItem("apiKey", this.apiKey);
                 localStorage.setItem("apiSecret", this.apiSecret);
-                localStorage.setItem("ticket", this.ticket);
                 localStorage.setItem("ticketId", this.ticketId);
+                localStorage.setItem("ticket", this.ticket);
                 localStorage.setItem("userAccountId", this.userAccountId);
             },
 
@@ -575,16 +562,32 @@ for convenience. Stored secrets can be cleared from storage at will.
                     .then(function()
                     {
                         const haveCurrentAccount = (this.userAccountId);
-                        if (haveCurrentAccount)
-                        {
-                            const prompt = "Creating a new user account will first delete the current one, if it still exists.\nDo you want do proceed?";
-                            return this.$.confirmationDialog.pose(prompt)
-                                .then(this._deleteUserAccount.bind(this))
-                                .catch(function(error) {})  // Ignore. Account was probably deleted by other means.
-                                .then(this._createUserAccount.bind(this));
-                        }
+                        if (!haveCurrentAccount)
+                            return this._createUserAccount();
 
-                        return this._createUserAccount();
+                        const prompt = "Creating a new user account will first delete the current one, if it still exists.\nDo you want do proceed?";
+                        return this.$.confirmationDialog.pose(prompt)
+                            .then(function(choice)
+                            {
+                                if (choice == "cancel")
+                                    throw "cancel";
+                                return this._deleteUserAccount();
+                            }.bind(this))
+                            .catch(function(reason)
+                            {
+                                if (reason == "cancel")
+                                    throw "cancel";
+                                // Ignore. Account was probably deleted by other means.
+                            }.bind(this))
+                            .then(function()
+                            {
+                                this.userAccountId = "";
+
+                                // Deleting an account deletes its tickets
+                                this.ticketId = "";
+                                this.ticket = "";
+                            }.bind(this))
+                            .then(this._createUserAccount.bind(this));
                     }.bind(this))
                     .then(function(response)
                     {
@@ -592,6 +595,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
                     .catch(function(reason)
                     {
+                        if (reason == "cancel")
+                            return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
@@ -600,9 +605,24 @@ for convenience. Stored secrets can be cleared from storage at will.
             {
                 const prompt = "Are you sure you want to delete the user account?";
                 this.$.confirmationDialog.pose(prompt)
-                    .then(this._deleteUserAccount.bind(this))
+                    .then(function(choice)
+                    {
+                        if (choice == "cancel")
+                            throw "cancel";
+                        return this._deleteUserAccount();
+                    }.bind(this))
+                    .then(function()
+                    {
+                        this.userAccountId = "";
+
+                        // Deleting an account deletes its tickets
+                        this.ticketId = "";
+                        this.ticket = "";
+                    }.bind(this))
                     .catch(function(reason)
                     {
+                        if (reason == "cancel")
+                            return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
@@ -613,24 +633,39 @@ for convenience. Stored secrets can be cleared from storage at will.
                     .then(function()
                     {
                         const haveCurrentTicket = (this.ticket);
-                        if (haveCurrentTicket)
-                        {
-                            const prompt = "Creating a new user access ticket will first delete the current one, if it still exists.\nDo you want do proceed?";
-                            return this.$.confirmationDialog.pose(prompt)
-                                .then(this._deleteTicket.bind(this))
-                                .catch(function(error) {})  // Ignore. Ticket likely time out.
-                                .then(this._createTicket.bind(this))
-                        }
+                        if (!haveCurrentTicket)
+                            return this._createTicket();
 
-                        return this._createTicket();
+                        const prompt = "Creating a new user access ticket will first delete the current one, if it still exists.\nDo you want do proceed?";
+                        return this.$.confirmationDialog.pose(prompt)
+                            .then(function(choice)
+                            {
+                                if (choice == "cancel")
+                                    throw "cancel";
+                                return this._deleteTicket();
+                            }.bind(this))
+                            .catch(function(reason)
+                            {
+                                if (reason == "cancel")
+                                    throw "cancel";
+                                // Ignore. Ticket likely timed out.
+                            }.bind(this))
+                            .then(function()
+                            {
+                                this.ticketId = "";
+                                this.ticket = "";
+                            }.bind(this))
+                            .then(this._createTicket.bind(this));
                     }.bind(this))
                     .then(function(response)
                     {
+                        this.ticketId = response.id;
                         this.ticket = response.ticket;
-                        this.ticketId = response.ticketId;
                     }.bind(this))
                     .catch(function(reason)
                     {
+                        if (reason == "cancel")
+                            return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
@@ -639,9 +674,21 @@ for convenience. Stored secrets can be cleared from storage at will.
             {
                 const prompt = "Are you sure you want to delete the user access ticket?";
                 this.$.confirmationDialog.pose(prompt)
-                    .then(this._deleteTicket.bind(this))
+                    .then(function(choice)
+                    {
+                        if (choice == "cancel")
+                            throw "cancel";
+                        return this._deleteTicket();
+                    }.bind(this))
+                    .then(function()
+                    {
+                        this.ticketId = "";
+                        this.ticket = "";
+                    }.bind(this))
                     .catch(function(reason)
                     {
+                        if (reason == "cancel")
+                            return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
@@ -650,9 +697,16 @@ for convenience. Stored secrets can be cleared from storage at will.
             {
                 const prompt = "Are you sure you want to clear the secrets?";
                 this.$.confirmationDialog.pose(prompt)
-                    .then(this._clearSecrets.bind(this))
+                    .then(function(choice)
+                    {
+                        if (choice == "cancel")
+                            throw "cancel";
+                        return this._clearSecrets();
+                    }.bind(this))
                     .catch(function(reason)
                     {
+                        if (reason == "cancel")
+                            return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
@@ -692,7 +746,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                 const url = this.server + "/api/v1/accounts/";
                 const partnerAccountId = this._generateGuid();
                 const body = {
-                    "partnerAccountId": partnerAccountId
+                    partnerAccountId: partnerAccountId
                 };
                 const options = this._buildHttpOptions();
                 return this.httpPost(url, body, options);
@@ -720,7 +774,10 @@ for convenience. Stored secrets can be cleared from storage at will.
                 const authorizationValue = "Basic " + btoa(this.apiKey + ":" + this.apiSecret);
 
                 return {
-                    headers: {Authorization: authorizationValue}
+                    withCredentials: true,
+                    headers: {
+                        Authorization: authorizationValue
+                    }
                 };
             },
 
