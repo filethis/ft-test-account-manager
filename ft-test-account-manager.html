@@ -253,6 +253,20 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             properties: {
 
+                /** The FileThis server URL. Used by FileThis for testing against non-production servers. Defaults to value of _defaultServer_ property. */
+                server: {
+                    type: String,
+                    notify: true,
+                    value: "",
+                    observer: "_onServerChanged"
+                },
+//                server: {
+//                    type: String,
+//                    notify: true,
+//                    value: "",
+//                    observer: "_onFieldChanged"
+//                },
+
                 /** The Partner API key. */
                 apiKey: {
                     type: String,
@@ -274,8 +288,14 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onUserAccountIdChanged"
                 },
+//                userAccountId: {
+//                    type: String,
+//                    notify: true,
+//                    value: "",
+//                    observer: "_onFieldChanged"
+//                },
 
                 /** The user's FileThis ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
                 ticketId: {
@@ -288,8 +308,14 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onTicketChanged"
                 },
+//                ticket: {
+//                    type: String,
+//                    notify: true,
+//                    value: "",
+//                    observer: "_onFieldChanged"
+//                },
 
                 /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
                 showServer: {
@@ -298,19 +324,10 @@ for convenience. Stored secrets can be cleared from storage at will.
                     value: true
                 },
 
-                /** The FileThis server URL. Used by FileThis for testing against non-production servers. Defaults to value of _defaultServer_ property. */
-                server: {
-                    type: String,
-                    notify: true,
-                    value: "",
-                    observer: "_onFieldChanged"
-                },
-
                 /** The default server URL. Used by FileThis for testing against non-production servers. */
                 defaultServer: {
                     type: String,
                     notify: false,
-                    readOnly: true,
                     value: "https://filethis.com"
                 },
 
@@ -353,7 +370,6 @@ for convenience. Stored secrets can be cleared from storage at will.
                     value: false
                 },
 
-
                 _showSecrets: {
                     type: Boolean,
                     notify: true,
@@ -367,6 +383,26 @@ for convenience. Stored secrets can be cleared from storage at will.
                 }
             },
 
+
+            _onServerChanged: function()
+            {
+                var theServer = this.server;
+//                this._onFieldChanged();
+            },
+
+            _onUserAccountIdChanged: function()
+            {
+                var theUserAccountId = this.userAccountId;
+//                this._onFieldChanged();
+            },
+
+            _onTicketChanged: function()
+            {
+                var theTicket = this.ticket;
+//                this._onFieldChanged();
+            },
+
+
             // Startup -------------------------------------------------------------------------------------
 
             ready: function()
@@ -374,9 +410,26 @@ for convenience. Stored secrets can be cleared from storage at will.
                 this.$.urlValidator.validate = this._validateUrl.bind(this);
                 this.$.alphanumericValidator.validate = this._validateAlphanumeric.bind(this);
 
+                this.async(function()
+                {
+                    this._shit();
+                },
+                3000)
+            },
+
+            _shit: function()
+            {
                 this._readFromLocalStorage();
                 this._enableOrDisableButtons();
             },
+
+            // Kinda hacky, but we want to set our values after all the two-way binding settle down and so the values
+            // we set here don't get overriden. Seems to work, tho.
+//            attached: function()
+//            {
+//                this._readFromLocalStorage();
+//                this._enableOrDisableButtons();
+//            },
 
 
             // Validation functions ---------------------------------------------------

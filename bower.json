@@ -3,7 +3,7 @@
   "description": "An element that allows partner admins to create user accounts for testing. Also allows the creation of access tickets for the account.",
   "main": "ft-test-account-manager.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
+    "polymer": "Polymer/polymer#^1.9.0",
     "paper-input": "PolymerElements/paper-input#^1.1.24",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^1.0.9",
     "validator-js": "^7.0.0",
