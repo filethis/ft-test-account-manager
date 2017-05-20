@@ -234,7 +234,6 @@ for convenience. Stored secrets can be cleared from storage at will.
                               on-click="_onClearSecretsButtonClicked">
                     Clear Stored Secrets
                 </paper-button>
-
             </div>
 
         </div>
@@ -258,14 +257,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onServerChanged"
+                    observer: "_onFieldChanged"
                 },
-//                server: {
-//                    type: String,
-//                    notify: true,
-//                    value: "",
-//                    observer: "_onFieldChanged"
-//                },
 
                 /** The Partner API key. */
                 apiKey: {
@@ -288,14 +281,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onUserAccountIdChanged"
+                    observer: "_onFieldChanged"
                 },
-//                userAccountId: {
-//                    type: String,
-//                    notify: true,
-//                    value: "",
-//                    observer: "_onFieldChanged"
-//                },
 
                 /** The user's FileThis ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
                 ticketId: {
@@ -308,14 +295,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onTicketChanged"
+                    observer: "_onFieldChanged"
                 },
-//                ticket: {
-//                    type: String,
-//                    notify: true,
-//                    value: "",
-//                    observer: "_onFieldChanged"
-//                },
 
                 /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
                 showServer: {
@@ -384,25 +365,6 @@ for convenience. Stored secrets can be cleared from storage at will.
             },
 
 
-            _onServerChanged: function()
-            {
-                var theServer = this.server;
-//                this._onFieldChanged();
-            },
-
-            _onUserAccountIdChanged: function()
-            {
-                var theUserAccountId = this.userAccountId;
-//                this._onFieldChanged();
-            },
-
-            _onTicketChanged: function()
-            {
-                var theTicket = this.ticket;
-//                this._onFieldChanged();
-            },
-
-
             // Startup -------------------------------------------------------------------------------------
 
             ready: function()
@@ -412,24 +374,10 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 this.async(function()
                 {
-                    this._shit();
-                },
-                3000)
+                    this._readFromLocalStorage();
+                    this._enableOrDisableButtons();
+                }, 1000)
             },
-
-            _shit: function()
-            {
-                this._readFromLocalStorage();
-                this._enableOrDisableButtons();
-            },
-
-            // Kinda hacky, but we want to set our values after all the two-way binding settle down and so the values
-            // we set here don't get overriden. Seems to work, tho.
-//            attached: function()
-//            {
-//                this._readFromLocalStorage();
-//                this._enableOrDisableButtons();
-//            },
 
 
             // Validation functions ---------------------------------------------------
