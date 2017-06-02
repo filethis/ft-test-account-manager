@@ -20,12 +20,14 @@ limitations under the License.
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
 <script src="../validator-js/validator.js"></script>
 
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
+<link rel="import" href="../ft-icon-button/ft-icon-button.html">
 
 <link rel="import" href="custom-validator.html">
 
@@ -42,13 +44,27 @@ for convenience. Stored secrets can be cleared from storage at will.
     <style include="iron-flex iron-flex-alignment"></style>
 
     <style>
-        paper-button
+        .section-title
         {
-            height:30px;
+            font-family:'Roboto', sans-serif;
+            font-size:16pt;
+            margin-top:16px;
+            padding-left:20px;
+            padding-right:10px;
         }
-        .section-space
+        .section-body
         {
-            height:30px;
+            padding-left:20px;
+            padding-right:10px;
+            padding-bottom:10px;
+        }
+        .section-divider
+        {
+            width:100%;
+            height:1px;
+            min-height: 1px;
+            clear:both;
+            border-bottom:1px solid #DDD;
         }
         .field-to-buttons-space
         {
@@ -56,168 +72,274 @@ for convenience. Stored secrets can be cleared from storage at will.
         }
         .inter-button-space
         {
-            width:20px;
+            width:15px;
         }
     </style>
 
     <template>
 
         <div class="layout vertical"
-             style="width:450px;
-                    padding:35px;
-                    background-color:white;
-                    border:1px solid #DDD;">
+             style="width:400px;
+                    padding:0;
+                    background-color:white;">
 
             <!-- Server -->
 
-            <div style="font-size:16pt" hidden$="[[!showServer]]">Server</div>
+            <div class="section-title" hidden$="[[!showServer]]">FileThis Server</div>
 
-            <div class="layout horizontal center" style="width:100%;" hidden$="[[!showServer]]">
+            <div class="section-body layout horizontal center" hidden$="[[!showServer]]">
 
                 <!-- Server -->
                 <custom-validator id="urlValidator" validator-name="url-validator"></custom-validator>
-                <paper-input id="serverField"
-                             value="{{server}}"
-                             label="URL"
-                             auto-validate
-                             validator="url-validator"
-                             error-message="Must be a valid URL"
-                             style="width:100%;">
+                <paper-input
+                        id="serverField"
+                        value="{{server}}"
+                        label="URL"
+                        auto-validate
+                        validator="url-validator"
+                        error-message="Must be a valid URL"
+                        style="width:100%;">
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Default button -->
-                <paper-button dialog-confirm raised
-                              id="defaultServerButton"
-                              disabled$="[[!_canSetDefaultServer]]"
-                              style="width:100px"
-                              on-click="_onDefaultServerButtonClicked">
-                    Default
-                </paper-button>
+                <ft-icon-button
+                        id="defaultServerButton"
+                        icon="undo"
+                        label="Default"
+                        disabled="[[!_canDeleteUserServer]]"
+                        on-click="_onDefaultServerButtonClicked">
+                </ft-icon-button>
+
+                <div class="inter-button-space"></div>
+
+                <!-- Test Server button -->
+                <ft-icon-button
+                        id="testServerButton"
+                        icon="check"
+                        label="Test"
+                        disabled="[[!_canTestServer]]"
+                        on-click="_onTestServerButtonClicked">
+                </ft-icon-button>
+                <paper-tooltip
+                        id="testServerButtonTooltip"
+                        manual-mode="true"
+                        for="testServerButton"
+                        position="right"
+                        animation-delay="0"
+                        offset="5">
+                    Server URL is valid and reachable
+                </paper-tooltip>
 
             </div>
 
-            <div class="section-space" hidden$="[[!showServer]]"></div>
+            <!-- Divider -->
+            <div class="section-divider" hidden$="[[!showServer]]"></div>
 
-            <!-- Partner Credentials -->
+            <!-- API Credentials -->
 
-            <div style="font-size:16pt">Partner Credentials</div>
+            <div class="section-title">Partner API Credentials</div>
 
             <custom-validator id="alphanumericValidator" validator-name="alphanumeric-validator"></custom-validator>
 
             <!-- API Key -->
-            <paper-input id="apiKeyField"
-                         autofocus
-                         label="API Key"
-                         value="{{apiKey}}"
-                         type="[[_computeInputType(_showSecrets)]]"
-                         auto-validate
-                         validator="alphanumeric-validator"
-                         error-message="Must be an alphanumeric string"
-                         char-counter
-                         style="width:100%;">
-            </paper-input>
+            <div class="section-body layout horizontal center">
+
+                <!-- API Key -->
+                <paper-input
+                        id="apiKeyField"
+                        autofocus
+                        label="API Key"
+                        value="{{apiKey}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        auto-validate
+                        validator="alphanumeric-validator"
+                        error-message="Must be an alphanumeric string"
+                        char-counter
+                        style="width:100%;">
+                </paper-input>
+
+                <div class="field-to-buttons-space"></div>
+
+                <!-- Spacer, same width as "Test" button on line below -->
+                <div style="width:49px; min-width:49px; height:49px; max-height:49px;"></div>
+
+            </div>
 
             <!-- API Secret -->
-            <paper-input id="apiSecretField"
-                         autofocus
-                         label="API Secret"
-                         value="{{apiSecret}}"
-                         type="[[_computeInputType(_showSecrets)]]"
-                         auto-validate
-                         validator="alphanumeric-validator"
-                         error-message="Must be an alphanumeric string"
-                         char-counter
-                         style="width:100%;">
-            </paper-input>
+            <div class="section-body layout horizontal center">
 
-            <div class="section-space"></div>
+                <!-- API Secret -->
+                <paper-input
+                        id="apiSecretField"
+                        autofocus
+                        label="API Secret"
+                        value="{{apiSecret}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        auto-validate
+                        validator="alphanumeric-validator"
+                        error-message="Must be an alphanumeric string"
+                        char-counter
+                        style="width:100%;">
+                </paper-input>
+
+                <div class="field-to-buttons-space"></div>
+
+                <!-- Test API credentials button -->
+                <ft-icon-button
+                        id="testApiCredentialsButton"
+                        icon="check"
+                        label="Test"
+                        disabled="[[!_canTestApiCredentials]]"
+                        on-click="_onTestApiCredentialsButtonClicked">
+                </ft-icon-button>
+                <paper-tooltip
+                        id="testApiCredentialsButtonTooltip"
+                        manual-mode="true"
+                        for="testApiCredentialsButton"
+                        position="right"
+                        animation-delay="0"
+                        offset="5">
+                    The API credentials are valid.
+                </paper-tooltip>
+
+            </div>
+
+            <!-- Divider -->
+            <div class="section-divider"></div>
 
             <!-- User Account -->
 
-            <div style="font-size:16pt">User Account</div>
+            <div class="section-title">User Account</div>
 
-            <div class="layout horizontal center" style="width:100%;">
+            <div class="section-body layout horizontal center">
 
                 <!-- User acccount id -->
-                <paper-input id="userAccountIdField"
-                             readonly
-                             label="Id"
-                             value="{{userAccountId}}"
-                             auto-validate
-                             pattern="[0-9]+"
-                             error-message="Not a valid FileThis acccount id"
-                             style="width:100%;">
+                <paper-input
+                        id="userAccountIdField"
+                        label="Id"
+                        value="{{userAccountId}}"
+                        auto-validate
+                        pattern="[0-9]+"
+                        error-message="Not a valid FileThis acccount id"
+                        style="width:100%;">
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Delete Account button -->
-                <paper-button dialog-confirm raised
-                              id="deleteAccountButton"
-                              disabled$="[[!_canDeleteUserAccount]]"
-                              style="width:110px"
-                              on-click="_onDeleteAccountButtonClicked">
-                    Delete
-                </paper-button>
+                <ft-icon-button
+                        id="deleteAccountButton"
+                        icon="remove"
+                        label="Delete"
+                        disabled="[[!_canDeleteUserAccount]]"
+                        on-click="_onDeleteAccountButtonClicked">
+                </ft-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Create Account button -->
-                <paper-button dialog-confirm raised
-                              id="createAccountButton"
-                              disabled$="[[!_canCreateUserAccount]]"
-                              on-click="_onCreateAccountButtonClicked">
-                    New
-                </paper-button>
+                <ft-icon-button
+                        id="createAccountButton"
+                        icon="add"
+                        label="New"
+                        disabled="[[!_canCreateUserAccount]]"
+                        on-click="_onCreateAccountButtonClicked">
+                </ft-icon-button>
+
+                <div class="inter-button-space"></div>
+
+                <!-- Test Account button -->
+                <ft-icon-button
+                        id="testAccountButton"
+                        icon="check"
+                        label="Test"
+                        disabled="[[!_canTestUserAccount]]"
+                        on-click="_onTestAccountButtonClicked">
+                </ft-icon-button>
+                <paper-tooltip
+                        id="testAccountButtonTooltip"
+                        manual-mode="true"
+                        for="testAccountButton"
+                        position="right"
+                        animation-delay="0"
+                        offset="5">
+                    The user account id is valid.
+                </paper-tooltip>
 
             </div>
 
-            <div class="section-space"></div>
+            <!-- Divider -->
+            <div class="section-divider"></div>
 
-            <!-- User Access Ticket -->
+            <!-- User Access -->
 
-            <div style="font-size:16pt">User Access Ticket</div>
+            <div class="section-title">User Access Token</div>
 
-            <div class="layout horizontal center" style="width:100%;">
+            <div class="section-body layout horizontal center">
 
-                <!-- Ticket -->
-                <paper-input id="ticketField"
-                             label="Ticket"
-                             value="{{ticket}}"
-                             type="[[_computeInputType(_showSecrets)]]"
-                             char-counter
-                             style="width:100%;">
+                <!-- ticket -->
+                <paper-input
+                        id="ticketField"
+                        label="Token"
+                        value="{{ticket}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        char-counter
+                        style="width:100%;">
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Delete Ticket button -->
-                <paper-button dialog-confirm raised
-                              id="deleteTicketButton"
-                              disabled$="[[!_canDeleteTicket]]"
-                              style="width:110px"
-                              on-click="_onDeleteTicketButtonClicked">
-                    Delete
-                </paper-button>
+                <ft-icon-button
+                        id="deleteTicketButton"
+                        icon="remove"
+                        label="Delete"
+                        disabled="[[!_canDeleteTicket]]"
+                        on-click="_onDeleteTicketButtonClicked">
+                </ft-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Create Ticket button -->
-                <paper-button dialog-confirm raised
-                              id="createTicketButton"
-                              disabled$="[[!_canCreateTicket]]"
-                              on-click="_onCreateTicketButtonClicked">
-                    New
-                </paper-button>
+                <ft-icon-button
+                        id="createTicketButton"
+                        icon="add"
+                        label="New"
+                        disabled="[[!_canCreateTicket]]"
+                        on-click="_onCreateTicketButtonClicked">
+                </ft-icon-button>
+
+                <div class="inter-button-space"></div>
+
+                <!-- Test Ticket button -->
+                <ft-icon-button
+                        id="testTicketButton"
+                        icon="check"
+                        label="Test"
+                        disabled="[[!_canTestTicket]]"
+                        on-click="_onTestTicketButtonClicked">
+                </ft-icon-button>
+                <paper-tooltip
+                        id="testTicketButtonTooltip"
+                        manual-mode="true"
+                        for="testTicketButton"
+                        position="right"
+                        animation-delay="0"
+                        offset="5">
+                    The ticket is valid.
+                </paper-tooltip>
 
             </div>
 
-            <div class="section-space"></div>
+            <!-- Divider -->
+            <div class="section-divider"></div>
 
-            <!-- Commit buttons -->
-            <div class="layout horizontal center" style="width:100%;">
+            <!-- Secrets -->
+            <div
+                    class="section-body layout horizontal center"
+                    style="margin-top:16px;">
 
                 <!-- Show Secrets checkbox -->
                 <paper-checkbox
@@ -228,12 +350,13 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="flex"></div>
 
                 <!-- Clear Stored Secrets button -->
-                <paper-button dialog-confirm raised
-                              id="clearSecretsButton"
-                              disabled$="[[!_canClearSecrets]]"
-                              on-click="_onClearSecretsButtonClicked">
-                    Clear Stored Secrets
-                </paper-button>
+                <ft-icon-button
+                        id="clearSecretsButton"
+                        icon="clear"
+                        label="Clear"
+                        disabled="[[!_canClearSecrets]]"
+                        on-click="_onClearSecretsButtonClicked">
+                </ft-icon-button>
             </div>
 
         </div>
@@ -252,12 +375,36 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             properties: {
 
+                /** Whether the FileThis Connect instance is enabled or not */
+                enabled:
+                {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
+                /** Whether the FileThis Connect instance can be enabled or not */
+                canEnable:
+                {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+
                 /** The FileThis server URL. Used by FileThis for testing against non-production servers. Defaults to value of _defaultServer_ property. */
                 server: {
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onSettingChanged"
+                },
+
+                /** The path under the baseUrl used for API requests. For example: "/api/v1". Note that you should use a leading slash, and no trailing slash. */
+                apiPath:
+                {
+                    type: String,
+                    value: "/api/v1",
+                    observer: "_onSettingChanged"
                 },
 
                 /** The Partner API key. */
@@ -265,7 +412,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The Partner API secret. */
@@ -273,7 +420,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The user's FileThis account id. */
@@ -281,10 +428,10 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onSettingChanged"
                 },
 
-                /** The user's FileThis ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
+                /** The user's FileThis user access ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
                 ticketId: {
                     type: String,
                     notify: true,
@@ -295,7 +442,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onFieldChanged"
+                    observer: "_onSettingChanged"
                 },
 
                 /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
@@ -376,7 +523,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                 {
                     this._readFromLocalStorage();
                     this._enableOrDisableButtons();
-                }, 1000)
+                }, 200)
             },
 
 
@@ -408,7 +555,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             {
                 if (!this.server)
                     return true;
-                if (this.server != this.defaultServer)
+                if (this.server !== this.defaultServer)
                     return true;
                 return false;
             },
@@ -483,17 +630,36 @@ for convenience. Stored secrets can be cleared from storage at will.
             _enableOrDisableButtons: function()
             {
                 this._canSetDefaultServer = this._checkCanSetDefaultServer();
+                this._canTestServer = this._checkCanUseServer();
+                this._canTestApiCredentials = this._checkCanUsePartnerCredentials();
                 this._canCreateUserAccount = this._checkCanUsePartnerCredentials();
                 this._canDeleteUserAccount = this._checkCanUseUserAccount();
+                this._canTestUserAccount = this._checkCanUseUserAccount();
                 this._canCreateTicket = this._checkCanUseUserAccount();
                 this._canDeleteTicket = this._checkCanUseTicket();
+                this._canTestTicket = this._checkCanUseTicket();
                 this._canClearSecrets = this._checkCanClearSecrets();
             },
 
-            _onFieldChanged: function()
+            _onSettingChanged: function()
             {
                 this._writeToLocalStorage();
                 this._enableOrDisableButtons();
+
+                this.canEnable = this._checkCanEnable();
+            },
+
+            _checkCanEnable: function()
+            {
+                if (!this.server)
+                    return false;
+                if (!this.apiPath)
+                    return false;
+                if (!this.userAccountId)
+                    return false;
+                if (!this.ticket)
+                    return false;
+                return true;
             },
 
             _computeInputType: function(showSecrets)
@@ -554,7 +720,91 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onDefaultServerButtonClicked: function(event, detail)
             {
+                const overrideWarning = event.metaKey;
+                if (overrideWarning)
+                {
+                    this._restoreDefaultServer();
+                    return;
+                }
+
+                const url = "https://filethis.com";
+                const prompt = "Are you sure you want to restore the default of " + url + "?";
+                return this.$.confirmationDialog.confirm(prompt, "Restore")
+                    .then(function(choice)
+                    {
+                        if (choice === "cancel")
+                            return;
+                        this._restoreDefaultServer();
+                    }.bind(this))
+            },
+
+            _restoreDefaultServer: function(event, detail)
+            {
                 this.server = "https://filethis.com";
+            },
+
+            _onTestServerButtonClicked: function(event, detail)
+            {
+                var url = this.server + this.apiPath + "/healthcheck";
+                const options = this._buildHttpOptions();
+                this.httpGet(url, options)
+                    .then(function(response)
+                    {
+                        this._showTooltip(testServerButtonTooltip);
+                    }.bind(this))
+                    .catch(function(error)
+                    {
+                        this.$.confirmationDialog.alert("Cannot reach this server. Are you sure the URL is correct?")
+                    }.bind(this))
+            },
+
+            _onTestApiCredentialsButtonClicked: function(event, detail)
+            {
+                var url = this.server + this.apiPath + "/partners";
+                const options = this._buildHttpOptions();
+                this.httpGet(url, options)
+                    .then(function(response)
+                    {
+                        this._showTooltip(testApiCredentialsButtonTooltip);
+                    }.bind(this))
+                    .catch(function(error)
+                    {
+                        this._displayTestError(error);
+                    }.bind(this))
+            },
+
+            _onTestAccountButtonClicked: function(event, detail)
+            {
+                var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
+                const options = this._buildHttpOptions();
+                this.httpGet(url, options)
+                    .then(function(response)
+                    {
+                        this._showTooltip(testAccountButtonTooltip);
+                    }.bind(this))
+                    .catch(function(error)
+                    {
+                        this._displayTestError(error);
+                    }.bind(this))
+            },
+
+            _onTestTicketButtonClicked: function(event, detail)
+            {
+                var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
+                const options =  {
+                    headers: {
+                        "X-FileThis-Session": this.ticket
+                    }
+                };
+                this.httpGet(url, options)
+                    .then(function(response)
+                    {
+                        this._showTooltip(testTicketButtonTooltip);
+                    }.bind(this))
+                    .catch(function(error)
+                    {
+                        this._displayTestError(error);
+                    }.bind(this))
             },
 
             _onCreateAccountButtonClicked: function(event, detail)
@@ -562,33 +812,29 @@ for convenience. Stored secrets can be cleared from storage at will.
                 Promise.resolve()
                     .then(function()
                     {
-                        const haveCurrentAccount = (this.userAccountId);
+                        // If there is no current user account, go ahead and create one
+                        const haveCurrentAccount = !!this.userAccountId;
                         if (!haveCurrentAccount)
                             return this._createUserAccount();
 
-                        const prompt = "Creating a new user account will first delete the current one, if it still exists.\nDo you want do proceed?";
-                        return this.$.confirmationDialog.pose(prompt)
+                        // If caller asked to override the warning, go ahead and delete and recreate the user account
+                        const overrideWarning = event.metaKey;
+                        if (overrideWarning)
+                            return this._deleteAndRecreateUserAccount();
+
+                        // Ask the caller to confirm that they really want to delete the current user account
+                        var prompt = "Are you sure you want to create a new user account?";
+                        if (!!this.ticket)
+                            prompt += "<br><br>The current account and access ticket will be deleted first, if they exist.";
+                        else
+                            prompt += "<br><br>The current account will be deleted first, if it exists.";
+                        return this.$.confirmationDialog.confirm(prompt, "Proceed")
                             .then(function(choice)
                             {
-                                if (choice == "cancel")
+                                if (choice === "cancel")
                                     throw "cancel";
-                                return this._deleteUserAccount();
+                                return this._deleteAndRecreateUserAccount();
                             }.bind(this))
-                            .catch(function(reason)
-                            {
-                                if (reason == "cancel")
-                                    throw "cancel";
-                                // Ignore. Account was probably deleted by other means.
-                            }.bind(this))
-                            .then(function()
-                            {
-                                this.userAccountId = "";
-
-                                // Deleting an account deletes its tickets
-                                this.ticketId = "";
-                                this.ticket = "";
-                            }.bind(this))
-                            .then(this._createUserAccount.bind(this));
                     }.bind(this))
                     .then(function(response)
                     {
@@ -596,22 +842,52 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
                     .catch(function(reason)
                     {
-                        if (reason == "cancel")
+                        if (reason === "cancel")
                             return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
+            
+            _deleteAndRecreateUserAccount: function()
+            {
+                return this._deleteUserAccount()
+                    .catch(function(reason)
+                    {
+                        if (reason === "cancel")
+                            throw "cancel";
+                    }.bind(this))
+                    .then(function()
+                    {
+                        this.userAccountId = "";
+
+                        // Deleting an account deletes its tickets
+                        this.ticketId = "";
+                        this.ticket = "";
+                    }.bind(this))
+                    .then(this._createUserAccount.bind(this));
+            },
 
             _onDeleteAccountButtonClicked: function(event, detail)
             {
-                const prompt = "Are you sure you want to delete the user account?";
-                this.$.confirmationDialog.pose(prompt)
+                const overrideWarning = event.metaKey;
+                if (overrideWarning)
+                    return this._deleteUserAccountAction();
+
+                var prompt = "Are you sure you want to delete the user account?";
+                if (!!this.ticket)
+                    prompt += "<br><br>This will also delete the current user access ticket, if it exists.";
+                this.$.confirmationDialog.confirm(prompt, "Delete User Account")
                     .then(function(choice)
                     {
-                        if (choice == "cancel")
-                            throw "cancel";
-                        return this._deleteUserAccount();
+                        if (choice === "cancel")
+                            return;
+                        return this._deleteUserAccountAction();
                     }.bind(this))
+            },
+
+            _deleteUserAccountAction: function()
+            {
+                this._deleteUserAccount()
                     .then(function()
                     {
                         this.userAccountId = "";
@@ -622,7 +898,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
                     .catch(function(reason)
                     {
-                        if (reason == "cancel")
+                        if (reason === "cancel")
                             return;
                         this.handleCaughtError(reason);
                     }.bind(this));
@@ -633,30 +909,25 @@ for convenience. Stored secrets can be cleared from storage at will.
                 Promise.resolve()
                     .then(function()
                     {
-                        const haveCurrentTicket = (this.ticket);
+                        // If there is no current ticket, go ahead and create one
+                        const haveCurrentTicket = !!this.ticket;
                         if (!haveCurrentTicket)
                             return this._createTicket();
 
-                        const prompt = "Creating a new user access ticket will first delete the current one, if it still exists.\nDo you want do proceed?";
-                        return this.$.confirmationDialog.pose(prompt)
+                        // If caller asked to override the warning, go ahead and delete and recreate the ticket
+                        const overrideWarning = event.metaKey;
+                        if (overrideWarning)
+                            return this._deleteAndRecreateTicket();
+
+                        // Ask the caller to confirm that they really want to delete the current ticket
+                        const prompt = "Creating a new user access ticket will first delete the current one, if it exists.\nDo you want do proceed?";
+                        return this.$.confirmationDialog.confirm(prompt, "Proceed")
                             .then(function(choice)
                             {
-                                if (choice == "cancel")
+                                if (choice === "cancel")
                                     throw "cancel";
-                                return this._deleteTicket();
+                                return this._deleteAndRecreateTicket();
                             }.bind(this))
-                            .catch(function(reason)
-                            {
-                                if (reason == "cancel")
-                                    throw "cancel";
-                                // Ignore. Ticket likely timed out.
-                            }.bind(this))
-                            .then(function()
-                            {
-                                this.ticketId = "";
-                                this.ticket = "";
-                            }.bind(this))
-                            .then(this._createTicket.bind(this));
                     }.bind(this))
                     .then(function(response)
                     {
@@ -665,22 +936,48 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
                     .catch(function(reason)
                     {
-                        if (reason == "cancel")
+                        if (reason === "cancel")
                             return;
                         this.handleCaughtError(reason);
                     }.bind(this));
             },
 
+            _deleteAndRecreateTicket: function()
+            {
+                return this._deleteTicket()
+                    .catch(function(reason)
+                    {
+                        if (reason === "cancel")
+                            throw "cancel";
+                        // Ignore. Ticket likely timed out.
+                    }.bind(this))
+                    .then(function()
+                    {
+                        this.ticketId = "";
+                        this.ticket = "";
+                    }.bind(this))
+                    .then(this._createTicket.bind(this));
+            },
+
             _onDeleteTicketButtonClicked: function(event, detail)
             {
+                const overrideWarning = event.metaKey;
+                if (overrideWarning)
+                    return this._onDeleteTicketButtonAction();
+
                 const prompt = "Are you sure you want to delete the user access ticket?";
-                this.$.confirmationDialog.pose(prompt)
+                this.$.confirmationDialog.confirm(prompt, "Delete Ticket")
                     .then(function(choice)
                     {
-                        if (choice == "cancel")
-                            throw "cancel";
-                        return this._deleteTicket();
+                        if (choice === "cancel")
+                            return;
+                        return this._onDeleteTicketButtonAction();
                     }.bind(this))
+            },
+
+            _onDeleteTicketButtonAction: function()
+            {
+                this._deleteTicket()
                     .then(function()
                     {
                         this.ticketId = "";
@@ -688,7 +985,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
                     .catch(function(reason)
                     {
-                        if (reason == "cancel")
+                        if (reason === "cancel")
                             return;
                         this.handleCaughtError(reason);
                     }.bind(this));
@@ -696,17 +993,27 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onClearSecretsButtonClicked: function(event, detail)
             {
-                const prompt = "Are you sure you want to clear the secrets?";
-                this.$.confirmationDialog.pose(prompt)
+                const overrideWarning = event.metaKey;
+                if (overrideWarning)
+                    return this._onClearSecretsAction();
+
+                var prompt = "Are you sure you want to the clear secrets stored in your browser's local storage?";
+                prompt += "<br><br>Secrets include the API key, API secret, and the current user access ticket.";
+                this.$.confirmationDialog.confirm(prompt, "Clear Secrets")
                     .then(function(choice)
                     {
-                        if (choice == "cancel")
-                            throw "cancel";
-                        return this._clearSecrets();
+                        if (choice === "cancel")
+                            return;
+                        return this._onClearSecretsAction();
                     }.bind(this))
+            },
+
+            _onClearSecretsAction: function()
+            {
+                this._clearSecrets()
                     .catch(function(reason)
                     {
-                        if (reason == "cancel")
+                        if (reason === "cancel")
                             return;
                         this.handleCaughtError(reason);
                     }.bind(this));
@@ -721,7 +1028,6 @@ for convenience. Stored secrets can be cleared from storage at will.
                 {
                     this.apiKey = "";
                     this.apiSecret = "";
-                    this.userAccountId = "";
                     this.ticket = "";
                     this.ticketId = "";
                 }
@@ -793,6 +1099,45 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                     s4() + '-' + s4() + s4() + s4();
+            },
+
+            _showTooltip: function(tooltip)
+            {
+                tooltip.show();
+                setTimeout(function()
+                {
+                    tooltip.hide();
+                }.bind(this), 2000)
+            },
+
+            _displayTestError: function(error)
+            {
+                // Handle certain server error responses
+                if (error instanceof FtHttpUnsuccessfulError)
+                {
+                    const status = error.status;
+                    const response = error.response;
+                    const message = response.message;
+
+                    // If the ticket expired, or is invalid
+                    if (status === 400 &&
+                        message === "Session ticket expired")
+                    {
+                        this.$.confirmationDialog.alert("User ticket is expired or invalid.");
+                        return;
+                    }
+
+                    // If the account could not be found
+                    if (status === 404 &&
+                        message.startsWith("An account with the requested id"))
+                    {
+                        this.$.confirmationDialog.alert("The given user account was not found.");
+                        return;
+                    }
+                }
+
+                // Display a dialog for other kinds of errors, like networking
+                this.handleCaughtError(error);
             }
 
         });
