@@ -35,7 +35,7 @@ limitations under the License.
 <!--
 `ft-test-account-manager`
 An element that provides an easy way for an partner admin to create and delete user test accounts, and to create and
-delete access tickets for the accounts. It saves settings and the current account and ticket in browser local storage
+delete access tokens for the accounts. It saves settings and the current account and token in browser local storage
 for convenience. Stored secrets can be cleared from storage at will.
 -->
 
@@ -279,11 +279,11 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             <div class="section-body layout horizontal center">
 
-                <!-- ticket -->
+                <!-- token -->
                 <paper-input
-                        id="ticketField"
+                        id="tokenField"
                         label="Token"
-                        value="{{ticket}}"
+                        value="{{token}}"
                         type="[[_computeInputType(_showSecrets)]]"
                         char-counter
                         style="width:100%;">
@@ -291,44 +291,44 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 <div class="field-to-buttons-space"></div>
 
-                <!-- Delete Ticket button -->
+                <!-- Delete Token button -->
                 <ft-icon-button
-                        id="deleteTicketButton"
+                        id="deleteTokenButton"
                         icon="remove"
                         label="Delete"
-                        disabled="[[!_canDeleteTicket]]"
-                        on-click="_onDeleteTicketButtonClicked">
+                        disabled="[[!_canDeleteToken]]"
+                        on-click="_onDeleteTokenButtonClicked">
                 </ft-icon-button>
 
                 <div class="inter-button-space"></div>
 
-                <!-- Create Ticket button -->
+                <!-- Create Token button -->
                 <ft-icon-button
-                        id="createTicketButton"
+                        id="createTokenButton"
                         icon="add"
                         label="New"
-                        disabled="[[!_canCreateTicket]]"
-                        on-click="_onCreateTicketButtonClicked">
+                        disabled="[[!_canCreateToken]]"
+                        on-click="_onCreateTokenButtonClicked">
                 </ft-icon-button>
 
                 <div class="inter-button-space"></div>
 
-                <!-- Test Ticket button -->
+                <!-- Test Token button -->
                 <ft-icon-button
-                        id="testTicketButton"
+                        id="testTokenButton"
                         icon="check"
                         label="Test"
-                        disabled="[[!_canTestTicket]]"
-                        on-click="_onTestTicketButtonClicked">
+                        disabled="[[!_canTestToken]]"
+                        on-click="_onTestTokenButtonClicked">
                 </ft-icon-button>
                 <paper-tooltip
-                        id="testTicketButtonTooltip"
+                        id="testTokenButtonTooltip"
                         manual-mode="true"
-                        for="testTicketButton"
+                        for="testTokenButton"
                         position="right"
                         animation-delay="0"
                         offset="5">
-                    The ticket is valid.
+                    The token is valid.
                 </paper-tooltip>
 
             </div>
@@ -431,14 +431,14 @@ for convenience. Stored secrets can be cleared from storage at will.
                     observer: "_onSettingChanged"
                 },
 
-                /** The user's FileThis user access ticket. Used to authenticate and authorize requests to the FileThis API endpoints. */
-                ticketId: {
+                /** The user's FileThis user access token. Used to authenticate and authorize requests to the FileThis API endpoints. */
+                tokenId: {
                     type: String,
                     notify: true,
                     value: ""
                 },
 
-                ticket: {
+                token: {
                     type: String,
                     notify: true,
                     value: "",
@@ -464,49 +464,41 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 _canSetDefaultServer: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
                 _canCreateUserAccount: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
                 _canDeleteUserAccount: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
-                _canCreateTicket: {
+                _canCreateToken: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
-                _canDeleteTicket: {
+                _canDeleteToken: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
                 _canClearSecrets: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
                 _showSecrets: {
                     type: Boolean,
-                    notify: true,
                     value: false
                 },
 
                 _suppressWriteToLocalStorage: {
                     type: Boolean,
-                    notify: true,
                     value: true
                 }
             },
@@ -601,14 +593,14 @@ for convenience. Stored secrets can be cleared from storage at will.
                 return true;
             },
 
-            _checkCanUseTicket: function()
+            _checkCanUseToken: function()
             {
                 if (!this._checkCanUseUserAccount())
                     return false;
 
-                if (!this.ticket)
+                if (!this.token)
                     return false;
-                if (this.$.ticketField.invalid)
+                if (this.$.tokenField.invalid)
                     return false;
 
                 return true;
@@ -620,7 +612,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     return true;
                 if (this.apiSecret)
                     return true;
-                if (this.ticket)
+                if (this.token)
                     return true;
                 if (this.userAccountId)
                     return true;
@@ -635,13 +627,13 @@ for convenience. Stored secrets can be cleared from storage at will.
                 this._canCreateUserAccount = this._checkCanUsePartnerCredentials();
                 this._canDeleteUserAccount = this._checkCanUseUserAccount();
                 this._canTestUserAccount = this._checkCanUseUserAccount();
-                this._canCreateTicket = this._checkCanUseUserAccount();
-                this._canDeleteTicket = this._checkCanUseTicket();
-                this._canTestTicket = this._checkCanUseTicket();
+                this._canCreateToken = this._checkCanUseUserAccount();
+                this._canDeleteToken = this._checkCanUseToken();
+                this._canTestToken = this._checkCanUseToken();
                 this._canClearSecrets = this._checkCanClearSecrets();
             },
 
-            _onSettingChanged: function()
+            _onSettingChanged: function(to, from)
             {
                 this._writeToLocalStorage();
                 this._enableOrDisableButtons();
@@ -657,7 +649,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     return false;
                 if (!this.userAccountId)
                     return false;
-                if (!this.ticket)
+                if (!this.token)
                     return false;
                 return true;
             },
@@ -686,8 +678,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     this.apiKey = this._readFromLocalStorageSingle("apiKey");
                     this.apiSecret = this._readFromLocalStorageSingle("apiSecret");
                     this.userAccountId = this._readFromLocalStorageSingle("userAccountId");
-                    this.ticketId = this._readFromLocalStorageSingle("ticketId");
-                    this.ticket = this._readFromLocalStorageSingle("ticket");
+                    this.tokenId = this._readFromLocalStorageSingle("tokenId");
+                    this.token = this._readFromLocalStorageSingle("token");
                 }
                 finally
                 {
@@ -702,8 +694,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                 localStorage.setItem("server", this.server);
                 localStorage.setItem("apiKey", this.apiKey);
                 localStorage.setItem("apiSecret", this.apiSecret);
-                localStorage.setItem("ticketId", this.ticketId);
-                localStorage.setItem("ticket", this.ticket);
+                localStorage.setItem("tokenId", this.tokenId);
+                localStorage.setItem("token", this.token);
                 localStorage.setItem("userAccountId", this.userAccountId);
             },
 
@@ -788,18 +780,18 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this))
             },
 
-            _onTestTicketButtonClicked: function(event, detail)
+            _onTestTokenButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
                 const options =  {
                     headers: {
-                        "X-FileThis-Session": this.ticket
+                        "X-FileThis-Session": this.token
                     }
                 };
                 this.httpGet(url, options)
                     .then(function(response)
                     {
-                        this._showTooltip(testTicketButtonTooltip);
+                        this._showTooltip(testTokenButtonTooltip);
                     }.bind(this))
                     .catch(function(error)
                     {
@@ -824,8 +816,8 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                         // Ask the caller to confirm that they really want to delete the current user account
                         var prompt = "Are you sure you want to create a new user account?";
-                        if (!!this.ticket)
-                            prompt += "<br><br>The current account and access ticket will be deleted first, if they exist.";
+                        if (!!this.token)
+                            prompt += "<br><br>The current account and access token will be deleted first, if they exist.";
                         else
                             prompt += "<br><br>The current account will be deleted first, if it exists.";
                         return this.$.confirmationDialog.confirm(prompt, "Proceed")
@@ -860,9 +852,9 @@ for convenience. Stored secrets can be cleared from storage at will.
                     {
                         this.userAccountId = "";
 
-                        // Deleting an account deletes its tickets
-                        this.ticketId = "";
-                        this.ticket = "";
+                        // Deleting an account deletes its tokens
+                        this.tokenId = "";
+                        this.token = "";
                     }.bind(this))
                     .then(this._createUserAccount.bind(this));
             },
@@ -874,8 +866,8 @@ for convenience. Stored secrets can be cleared from storage at will.
                     return this._deleteUserAccountAction();
 
                 var prompt = "Are you sure you want to delete the user account?";
-                if (!!this.ticket)
-                    prompt += "<br><br>This will also delete the current user access ticket, if it exists.";
+                if (!!this.token)
+                    prompt += "<br><br>This will also delete the current user access token, if it exists.";
                 this.$.confirmationDialog.confirm(prompt, "Delete User Account")
                     .then(function(choice)
                     {
@@ -892,9 +884,9 @@ for convenience. Stored secrets can be cleared from storage at will.
                     {
                         this.userAccountId = "";
 
-                        // Deleting an account deletes its tickets
-                        this.ticketId = "";
-                        this.ticket = "";
+                        // Deleting an account deletes its tokens
+                        this.tokenId = "";
+                        this.token = "";
                     }.bind(this))
                     .catch(function(reason)
                     {
@@ -904,35 +896,35 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this));
             },
 
-            _onCreateTicketButtonClicked: function(event, detail)
+            _onCreateTokenButtonClicked: function(event, detail)
             {
                 Promise.resolve()
                     .then(function()
                     {
-                        // If there is no current ticket, go ahead and create one
-                        const haveCurrentTicket = !!this.ticket;
-                        if (!haveCurrentTicket)
-                            return this._createTicket();
+                        // If there is no current token, go ahead and create one
+                        const haveCurrentToken = !!this.token;
+                        if (!haveCurrentToken)
+                            return this._createToken();
 
-                        // If caller asked to override the warning, go ahead and delete and recreate the ticket
+                        // If caller asked to override the warning, go ahead and delete and recreate the token
                         const overrideWarning = event.metaKey;
                         if (overrideWarning)
-                            return this._deleteAndRecreateTicket();
+                            return this._deleteAndRecreateToken();
 
-                        // Ask the caller to confirm that they really want to delete the current ticket
-                        const prompt = "Creating a new user access ticket will first delete the current one, if it exists.\nDo you want do proceed?";
+                        // Ask the caller to confirm that they really want to delete the current token
+                        const prompt = "Creating a new user access token will first delete the current one, if it exists.\nDo you want do proceed?";
                         return this.$.confirmationDialog.confirm(prompt, "Proceed")
                             .then(function(choice)
                             {
                                 if (choice === "cancel")
                                     throw "cancel";
-                                return this._deleteAndRecreateTicket();
+                                return this._deleteAndRecreateToken();
                             }.bind(this))
                     }.bind(this))
                     .then(function(response)
                     {
-                        this.ticketId = response.id;
-                        this.ticket = response.ticket;
+                        this.tokenId = response.id;
+                        this.token = response.token;
                     }.bind(this))
                     .catch(function(reason)
                     {
@@ -942,46 +934,46 @@ for convenience. Stored secrets can be cleared from storage at will.
                     }.bind(this));
             },
 
-            _deleteAndRecreateTicket: function()
+            _deleteAndRecreateToken: function()
             {
-                return this._deleteTicket()
+                return this._deleteToken()
                     .catch(function(reason)
                     {
                         if (reason === "cancel")
                             throw "cancel";
-                        // Ignore. Ticket likely timed out.
+                        // Ignore. Token likely timed out.
                     }.bind(this))
                     .then(function()
                     {
-                        this.ticketId = "";
-                        this.ticket = "";
+                        this.tokenId = "";
+                        this.token = "";
                     }.bind(this))
-                    .then(this._createTicket.bind(this));
+                    .then(this._createToken.bind(this));
             },
 
-            _onDeleteTicketButtonClicked: function(event, detail)
+            _onDeleteTokenButtonClicked: function(event, detail)
             {
                 const overrideWarning = event.metaKey;
                 if (overrideWarning)
-                    return this._onDeleteTicketButtonAction();
+                    return this._onDeleteTokenButtonAction();
 
-                const prompt = "Are you sure you want to delete the user access ticket?";
-                this.$.confirmationDialog.confirm(prompt, "Delete Ticket")
+                const prompt = "Are you sure you want to delete the user access token?";
+                this.$.confirmationDialog.confirm(prompt, "Delete Token")
                     .then(function(choice)
                     {
                         if (choice === "cancel")
                             return;
-                        return this._onDeleteTicketButtonAction();
+                        return this._onDeleteTokenButtonAction();
                     }.bind(this))
             },
 
-            _onDeleteTicketButtonAction: function()
+            _onDeleteTokenButtonAction: function()
             {
-                this._deleteTicket()
+                this._deleteToken()
                     .then(function()
                     {
-                        this.ticketId = "";
-                        this.ticket = "";
+                        this.tokenId = "";
+                        this.token = "";
                     }.bind(this))
                     .catch(function(reason)
                     {
@@ -998,7 +990,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     return this._onClearSecretsAction();
 
                 var prompt = "Are you sure you want to the clear secrets stored in your browser's local storage?";
-                prompt += "<br><br>Secrets include the API key, API secret, and the current user access ticket.";
+                prompt += "<br><br>Secrets include the API key, API secret, and the current user access token.";
                 this.$.confirmationDialog.confirm(prompt, "Clear Secrets")
                     .then(function(choice)
                     {
@@ -1021,15 +1013,15 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _clearSecrets: function()
             {
-                // TODO: Prompt to delete account and ticket
+                // TODO: Prompt to delete account and token
 
                 this._suppressWriteToLocalStorage = true;
                 try
                 {
                     this.apiKey = "";
                     this.apiSecret = "";
-                    this.ticket = "";
-                    this.ticketId = "";
+                    this.token = "";
+                    this.tokenId = "";
                 }
                 finally
                 {
@@ -1059,16 +1051,16 @@ for convenience. Stored secrets can be cleared from storage at will.
                 return this.httpPost(url, body, options);
             },
 
-            _deleteTicket: function()
+            _deleteToken: function()
             {
-                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tickets/" + this.ticketId;
+                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/" + this.tokenId;
                 const options = this._buildHttpOptions();
                 return this.httpDelete(url, options);
             },
 
-            _createTicket: function()
+            _createToken: function()
             {
-                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tickets/";
+                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/";
                 const body = {
                     expiresIn: 120  // Two hours
                 };
@@ -1119,11 +1111,11 @@ for convenience. Stored secrets can be cleared from storage at will.
                     const response = error.response;
                     const message = response.message;
 
-                    // If the ticket expired, or is invalid
+                    // If the token expired, or is invalid
                     if (status === 400 &&
-                        message === "Session ticket expired")
+                        message === "User access token expired")
                     {
-                        this.$.confirmationDialog.alert("User ticket is expired or invalid.");
+                        this.$.confirmationDialog.alert("User access token is expired or invalid.");
                         return;
                     }
 
