@@ -14,7 +14,7 @@
     "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.1",
     "ft-error-behavior": "filethis/ft-error-behavior#^0.0.1",
     "ft-http-behavior": "filethis/ft-http-behavior#^0.0.1",
-    "ft-icon-button": "filethis/ft-icon-button#^0.0.1",
+    "ft-icon-button": "filethis/ft-icon-button#^0.0.2",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0"
   },
   "devDependencies": {
