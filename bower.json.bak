@@ -11,10 +11,10 @@
     "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.0.0",
-    "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.3",
-    "ft-error-behavior": "filethis/ft-error-behavior#^0.0.3",
-    "ft-http-behavior": "filethis/ft-http-behavior#^0.0.3",
-    "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.4",
+    "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.4",
+    "ft-error-behavior": "filethis/ft-error-behavior#^0.0.4",
+    "ft-http-behavior": "filethis/ft-http-behavior#^0.0.4",
+    "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.2",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0"
   },
   "devDependencies": {
@@ -24,5 +24,7 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
+    "polymer": "^2.0.1",
+    "webcomponentsjs": "^v1.0.0"
   }
 }
