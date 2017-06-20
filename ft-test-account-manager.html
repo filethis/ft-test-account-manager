@@ -27,7 +27,7 @@ limitations under the License.
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
-<link rel="import" href="../ft-icon-button/ft-icon-button.html">
+<link rel="import" href="../ft-labeled-icon-button/ft-labeled-icon-button.html">
 
 <link rel="import" href="custom-validator.html">
 
@@ -110,24 +110,24 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Default button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="defaultServerButton"
                         icon="undo"
                         label="Default"
                         disabled="[[!_canDeleteUserServer]]"
                         on-click="_onDefaultServerButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Test Server button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="testServerButton"
                         icon="check"
                         label="Test"
                         disabled="[[!_canTestServer]]"
                         on-click="_onTestServerButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
                 <paper-tooltip
                         id="testServerButtonTooltip"
                         manual-mode="true"
@@ -193,13 +193,13 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Test API credentials button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="testApiCredentialsButton"
                         icon="check"
                         label="Test"
                         disabled="[[!_canTestApiCredentials]]"
                         on-click="_onTestApiCredentialsButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
                 <paper-tooltip
                         id="testApiCredentialsButtonTooltip"
                         manual-mode="true"
@@ -235,35 +235,35 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Delete Account button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="deleteAccountButton"
                         icon="remove"
                         label="Delete"
                         disabled="[[!_canDeleteUserAccount]]"
                         on-click="_onDeleteAccountButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Create Account button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="createAccountButton"
                         icon="add"
                         label="New"
                         disabled="[[!_canCreateUserAccount]]"
                         on-click="_onCreateAccountButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Test Account button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="testAccountButton"
                         icon="check"
                         label="Test"
                         disabled="[[!_canTestUserAccount]]"
                         on-click="_onTestAccountButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
                 <paper-tooltip
                         id="testAccountButtonTooltip"
                         manual-mode="true"
@@ -298,35 +298,35 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Delete Token button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="deleteTokenButton"
                         icon="remove"
                         label="Delete"
                         disabled="[[!_canDeleteToken]]"
                         on-click="_onDeleteTokenButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Create Token button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="createTokenButton"
                         icon="add"
                         label="New"
                         disabled="[[!_canCreateToken]]"
                         on-click="_onCreateTokenButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Test Token button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="testTokenButton"
                         icon="check"
                         label="Test"
                         disabled="[[!_canTestToken]]"
                         on-click="_onTestTokenButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
                 <paper-tooltip
                         id="testTokenButtonTooltip"
                         manual-mode="true"
@@ -356,13 +356,13 @@ for convenience. Stored secrets can be cleared from storage at will.
                 <div class="flex"></div>
 
                 <!-- Clear Stored Secrets button -->
-                <ft-icon-button
+                <ft-labeled-icon-button
                         id="clearSecretsButton"
                         icon="clear"
                         label="Clear"
                         disabled="[[!_canClearSecrets]]"
                         on-click="_onClearSecretsButtonClicked">
-                </ft-icon-button>
+                </ft-labeled-icon-button>
             </div>
 
         </div>
