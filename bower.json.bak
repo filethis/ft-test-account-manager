@@ -11,10 +11,10 @@
     "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.0.0",
-    "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.4",
+    "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.5",
     "ft-error-behavior": "filethis/ft-error-behavior#^0.0.4",
     "ft-http-behavior": "filethis/ft-http-behavior#^0.0.4",
-    "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.2",
+    "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.3",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0"
   },
   "devDependencies": {
