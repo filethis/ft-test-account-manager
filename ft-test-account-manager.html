@@ -283,60 +283,70 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             <div class="section-title">User Access Token</div>
 
-            <div class="section-body layout horizontal center">
+            <div class="section-body layout vertical">
 
-                <!-- token -->
+                <!-- timeout -->
                 <paper-input
-                        id="tokenField"
-                        label="Token"
-                        value="{{token}}"
-                        type="[[_computeInputType(_showSecrets)]]"
-                        char-counter
-                        style="width:100%;">
+                        id="timeoutField"
+                        label="Timeout in Minutes"
+                        value="{{timeout}}"
+                        style="width:150px;">
                 </paper-input>
 
-                <div class="field-to-buttons-space"></div>
+                <div class="layout horizontal center">
 
-                <!-- Delete Token button -->
-                <ft-labeled-icon-button
-                        id="deleteTokenButton"
-                        icon="remove"
-                        label="Delete"
-                        disabled="[[!_canDeleteToken]]"
-                        on-click="_onDeleteTokenButtonClicked">
-                </ft-labeled-icon-button>
+                    <!-- token -->
+                    <paper-input
+                            id="tokenField"
+                            label="Token"
+                            value="{{token}}"
+                            type="[[_computeInputType(_showSecrets)]]"
+                            char-counter
+                            style="width:100%;">
+                    </paper-input>
 
-                <div class="inter-button-space"></div>
+                    <div class="field-to-buttons-space"></div>
 
-                <!-- Create Token button -->
-                <ft-labeled-icon-button
-                        id="createTokenButton"
-                        icon="add"
-                        label="New"
-                        disabled="[[!_canCreateToken]]"
-                        on-click="_onCreateTokenButtonClicked">
-                </ft-labeled-icon-button>
+                    <!-- Delete Token button -->
+                    <ft-labeled-icon-button
+                            id="deleteTokenButton"
+                            icon="remove"
+                            label="Delete"
+                            disabled="[[!_canDeleteToken]]"
+                            on-click="_onDeleteTokenButtonClicked">
+                    </ft-labeled-icon-button>
 
-                <div class="inter-button-space"></div>
+                    <div class="inter-button-space"></div>
 
-                <!-- Test Token button -->
-                <ft-labeled-icon-button
-                        id="testTokenButton"
-                        icon="check"
-                        label="Test"
-                        disabled="[[!_canTestToken]]"
-                        on-click="_onTestTokenButtonClicked">
-                </ft-labeled-icon-button>
-                <paper-tooltip
-                        id="testTokenButtonTooltip"
-                        manual-mode="true"
-                        for="testTokenButton"
-                        position="right"
-                        animation-delay="0"
-                        offset="5">
-                    The token is valid.
-                </paper-tooltip>
+                    <!-- Create Token button -->
+                    <ft-labeled-icon-button
+                            id="createTokenButton"
+                            icon="add"
+                            label="New"
+                            disabled="[[!_canCreateToken]]"
+                            on-click="_onCreateTokenButtonClicked">
+                    </ft-labeled-icon-button>
 
+                    <div class="inter-button-space"></div>
+
+                    <!-- Test Token button -->
+                    <ft-labeled-icon-button
+                            id="testTokenButton"
+                            icon="check"
+                            label="Test"
+                            disabled="[[!_canTestToken]]"
+                            on-click="_onTestTokenButtonClicked">
+                    </ft-labeled-icon-button>
+                    <paper-tooltip
+                            id="testTokenButtonTooltip"
+                            manual-mode="true"
+                            for="testTokenButton"
+                            position="right"
+                            animation-delay="0"
+                            offset="5">
+                        The token is valid.
+                    </paper-tooltip>
+                </div>
             </div>
 
             <!-- Divider -->
@@ -442,6 +452,15 @@ for convenience. Stored secrets can be cleared from storage at will.
                     type: String,
                     notify: true,
                     value: ""
+                },
+
+                /** Timeout in minutes for the end-user FileThis token. */
+                timeout:
+                {
+                    type: Number,
+                    notify: true,
+                    value: 120, // Two hours
+                    observer: "_onSettingChanged"
                 },
 
                 token: {
@@ -685,6 +704,11 @@ for convenience. Stored secrets can be cleared from storage at will.
                     this.apiSecret = this._readFromLocalStorageSingle("apiSecret");
                     this.userAccountId = this._readFromLocalStorageSingle("userAccountId");
                     this.tokenId = this._readFromLocalStorageSingle("tokenId");
+                    var timeout = this._readFromLocalStorageSingle("timeout");
+                    if (!!timeout)
+                        this.timeout = timeout;
+                    else
+                        this.timeout = 120;  // Two hours
                     this.token = this._readFromLocalStorageSingle("token");
                 }
                 finally
@@ -701,6 +725,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                 localStorage.setItem("apiKey", this.apiKey);
                 localStorage.setItem("apiSecret", this.apiSecret);
                 localStorage.setItem("tokenId", this.tokenId);
+                localStorage.setItem("timeout", this.timeout);
                 localStorage.setItem("token", this.token);
                 localStorage.setItem("userAccountId", this.userAccountId);
             },
@@ -708,7 +733,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             _readFromLocalStorageSingle: function(name)
             {
                 var value = localStorage.getItem(name);
-                if (value == null)
+                if (value === null)
                     value = "";
                 return value;
             },
@@ -1048,7 +1073,8 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _createUserAccount: function()
             {
-                const url = this.server + "/api/v1/accounts/";
+                const url = this.server +
+                    "/api/v1/accounts/";
                 const partnerAccountId = this._generateGuid();
                 const body = {
                     partnerAccountId: partnerAccountId
@@ -1068,7 +1094,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             {
                 const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/";
                 const body = {
-                    expiresIn: 120  // Two hours
+                    expiresIn: this.timeout.toString()
                 };
                 const options = this._buildHttpOptions();
                 return this.httpPost(url, body, options);
