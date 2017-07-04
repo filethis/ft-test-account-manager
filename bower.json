@@ -3,28 +3,29 @@
   "description": "An element that allows partner admins to create user accounts for testing. Also allows the creation of access tickets for the account.",
   "main": "ft-test-account-manager.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.1",
-    "paper-input": "PolymerElements/paper-input#^2.0.0",
-    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#^2.0.0",
-    "validator-js": "^7.0.0",
-    "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^2.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
-    "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.0.0",
     "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.5",
     "ft-error-behavior": "filethis/ft-error-behavior#^0.0.4",
     "ft-http-behavior": "filethis/ft-http-behavior#^0.0.4",
     "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.3",
-    "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.0"
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#1 - 2",
+    "iron-validator-behavior": "PolymerElements/iron-validator-behavior#1 - 2",
+    "paper-checkbox": "PolymerElements/paper-checkbox#1 - 2",
+    "paper-dialog": "PolymerElements/paper-dialog#1 - 2",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#1 - 2",
+    "paper-input": "PolymerElements/paper-input#1 - 2",
+    "paper-tooltip": "PolymerElements/paper-tooltip#1 - 2",
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "validator-js": "^7.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
-    "web-component-tester": "^4.0.0",
+    "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#1 - 2",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#1 - 2",
+    "web-component-tester": "^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
-    "polymer": "^2.0.1",
-    "webcomponentsjs": "^v1.0.0"
+    "polymer": "1.9 - 2",
+    "webcomponentsjs": "^1.0.0"
   }
 }
