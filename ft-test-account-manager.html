@@ -114,7 +114,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                         id="defaultServerButton"
                         icon="undo"
                         label="Default"
-                        disabled="[[!_canDeleteUserServer]]"
+                        disabled="[[!_canSetDefaultServer]]"
                         on-tap="_onDefaultServerButtonClicked">
                 </ft-labeled-icon-button>
 
@@ -492,6 +492,16 @@ for convenience. Stored secrets can be cleared from storage at will.
                     value: false
                 },
 
+                _canTestServer: {
+                    type: Boolean,
+                    value: false
+                },
+
+                _canTestApiCredentials: {
+                    type: Boolean,
+                    value: false
+                },
+
                 _canCreateUserAccount: {
                     type: Boolean,
                     value: false
@@ -502,12 +512,22 @@ for convenience. Stored secrets can be cleared from storage at will.
                     value: false
                 },
 
+                _canTestUserAccount: {
+                    type: Boolean,
+                    value: false
+                },
+
                 _canCreateToken: {
                     type: Boolean,
                     value: false
                 },
 
                 _canDeleteToken: {
+                    type: Boolean,
+                    value: false
+                },
+
+                _canTestToken: {
                     type: Boolean,
                     value: false
                 },
@@ -743,15 +763,15 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onDefaultServerButtonClicked: function(event, detail)
             {
-                const overrideWarning = event.metaKey;
+                var overrideWarning = event.metaKey;
                 if (overrideWarning)
                 {
                     this._restoreDefaultServer();
                     return;
                 }
 
-                const url = "https://filethis.com";
-                const prompt = "Are you sure you want to restore the default of " + url + "?";
+                var url = "https://filethis.com";
+                var prompt = "Are you sure you want to restore the default of " + url + "?";
                 return this.$.confirmationDialog.confirm(prompt, "Restore")
                     .then(function(choice)
                     {
@@ -769,7 +789,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             _onTestServerButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/healthcheck";
-                const options = this._buildHttpOptions();
+                var options = this._buildHttpOptions();
                 this.httpGet(url, options)
                     .then(function(response)
                     {
@@ -784,7 +804,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             _onTestApiCredentialsButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/partners";
-                const options = this._buildHttpOptions();
+                var options = this._buildHttpOptions();
                 this.httpGet(url, options)
                     .then(function(response)
                     {
@@ -799,7 +819,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             _onTestAccountButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
-                const options = this._buildHttpOptions();
+                var options = this._buildHttpOptions();
                 this.httpGet(url, options)
                     .then(function(response)
                     {
@@ -814,7 +834,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             _onTestTokenButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
-                const options =  {
+                var options =  {
                     headers: {
                         "X-FileThis-Session": this.token
                     }
@@ -836,12 +856,12 @@ for convenience. Stored secrets can be cleared from storage at will.
                     .then(function()
                     {
                         // If there is no current user account, go ahead and create one
-                        const haveCurrentAccount = !!this.userAccountId;
+                        var haveCurrentAccount = !!this.userAccountId;
                         if (!haveCurrentAccount)
                             return this._createUserAccount();
 
                         // If caller asked to override the warning, go ahead and delete and recreate the user account
-                        const overrideWarning = event.metaKey;
+                        var overrideWarning = event.metaKey;
                         if (overrideWarning)
                             return this._deleteAndRecreateUserAccount();
 
@@ -892,7 +912,7 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onDeleteAccountButtonClicked: function(event, detail)
             {
-                const overrideWarning = event.metaKey;
+                var overrideWarning = event.metaKey;
                 if (overrideWarning)
                     return this._deleteUserAccountAction();
 
@@ -933,17 +953,17 @@ for convenience. Stored secrets can be cleared from storage at will.
                     .then(function()
                     {
                         // If there is no current token, go ahead and create one
-                        const haveCurrentToken = !!this.token;
+                        var haveCurrentToken = !!this.token;
                         if (!haveCurrentToken)
                             return this._createToken();
 
                         // If caller asked to override the warning, go ahead and delete and recreate the token
-                        const overrideWarning = event.metaKey;
+                        var overrideWarning = event.metaKey;
                         if (overrideWarning)
                             return this._deleteAndRecreateToken();
 
                         // Ask the caller to confirm that they really want to delete the current token
-                        const prompt = "Creating a new user access token will first delete the current one, if it exists.\nDo you want do proceed?";
+                        var prompt = "Creating a new user access token will first delete the current one, if it exists.\nDo you want do proceed?";
                         return this.$.confirmationDialog.confirm(prompt, "Proceed")
                             .then(function(choice)
                             {
@@ -984,11 +1004,11 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onDeleteTokenButtonClicked: function(event, detail)
             {
-                const overrideWarning = event.metaKey;
+                var overrideWarning = event.metaKey;
                 if (overrideWarning)
                     return this._onDeleteTokenButtonAction();
 
-                const prompt = "Are you sure you want to delete the user access token?";
+                var prompt = "Are you sure you want to delete the user access token?";
                 this.$.confirmationDialog.confirm(prompt, "Delete Token")
                     .then(function(choice)
                     {
@@ -1016,7 +1036,7 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _onClearSecretsButtonClicked: function(event, detail)
             {
-                const overrideWarning = event.metaKey;
+                var overrideWarning = event.metaKey;
                 if (overrideWarning)
                     return this._onClearSecretsAction();
 
@@ -1066,43 +1086,43 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             _deleteUserAccount: function()
             {
-                const url = this.server + "/api/v1/accounts/" + this.userAccountId;
-                const options = this._buildHttpOptions();
+                var url = this.server + "/api/v1/accounts/" + this.userAccountId;
+                var options = this._buildHttpOptions();
                 return this.httpDelete(url, options);
             },
 
             _createUserAccount: function()
             {
-                const url = this.server +
+                var url = this.server +
                     "/api/v1/accounts/";
-                const partnerAccountId = this._generateGuid();
-                const body = {
+                var partnerAccountId = this._generateGuid();
+                var body = {
                     partnerAccountId: partnerAccountId
                 };
-                const options = this._buildHttpOptions();
+                var options = this._buildHttpOptions();
                 return this.httpPost(url, body, options);
             },
 
             _deleteToken: function()
             {
-                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/" + this.tokenId;
-                const options = this._buildHttpOptions();
+                var url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/" + this.tokenId;
+                var options = this._buildHttpOptions();
                 return this.httpDelete(url, options);
             },
 
             _createToken: function()
             {
-                const url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/";
-                const body = {
+                var url = this.server + "/api/v1/accounts/" + this.userAccountId + "/tokens/";
+                var body = {
                     expiresIn: this.timeout.toString()
                 };
-                const options = this._buildHttpOptions();
+                var options = this._buildHttpOptions();
                 return this.httpPost(url, body, options);
             },
 
             _buildHttpOptions: function()
             {
-                const authorizationValue = "Basic " + btoa(this.apiKey + ":" + this.apiSecret);
+                var authorizationValue = "Basic " + btoa(this.apiKey + ":" + this.apiSecret);
 
                 return {
                     withCredentials: true,
@@ -1139,9 +1159,9 @@ for convenience. Stored secrets can be cleared from storage at will.
                 // Handle certain server error responses
                 if (error instanceof FtHttpUnsuccessfulError)
                 {
-                    const status = error.status;
-                    const response = error.response;
-                    const message = response.message;
+                    var status = error.status;
+                    var response = error.response;
+                    var message = response.message;
 
                     // If the token expired, or is invalid
                     if (status === 400 &&
