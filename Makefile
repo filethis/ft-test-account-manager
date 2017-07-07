@@ -1,6 +1,6 @@
 # Project configuration
 NAME=ft-test-account-manager
-VERSION=0.0.6
+VERSION=0.0.8
 LOCAL_PORT=3645
 GITHUB_USER=filethis
 
