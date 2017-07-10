@@ -53,7 +53,7 @@ for convenience. Stored secrets can be cleared from storage at will.
             .section-title
             {
                 font-family:'Roboto', sans-serif;
-                font-size:16pt;
+                font-size:14pt;
                 margin-top:16px;
                 padding-left:20px;
                 padding-right:10px;
@@ -66,12 +66,16 @@ for convenience. Stored secrets can be cleared from storage at will.
             }
             .section-divider
             {
-                width:100%;
-                height:1px;
-                min-height: 1px;
-                clear:both;
-                border-bottom:1px solid #DDD;
+                height:20px;
             }
+            /*.section-divider*/
+            /*{*/
+                /*width:100%;*/
+                /*height:1px;*/
+                /*min-height: 1px;*/
+                /*clear:both;*/
+                /*border-bottom:1px solid #DDD;*/
+            /*}*/
             .field-to-buttons-space
             {
                 width:30px;
@@ -82,10 +86,9 @@ for convenience. Stored secrets can be cleared from storage at will.
             }
         </style>
 
-        <div class="layout vertical"
-             style="width:400px;
-                    padding:0;
-                    background-color:white;">
+        <div
+                class="layout vertical"
+                style="width:400px; height:100%; padding:0; ">
 
             <!-- Server -->
 
@@ -143,7 +146,7 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             <!-- API Credentials -->
 
-            <div class="section-title">Partner API Credentials</div>
+            <div class="section-title">API Credentials</div>
 
             <custom-validator id="alphanumericValidator" validator-name="alphanumeric-validator"></custom-validator>
 
@@ -348,7 +351,8 @@ for convenience. Stored secrets can be cleared from storage at will.
             </div>
 
             <!-- Divider -->
-            <div class="section-divider"></div>
+            <!--<div class="section-divider"></div>-->
+            <div class="flex"></div>
 
             <!-- Secrets -->
             <div
@@ -470,9 +474,9 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
                 showServer: {
-                    type: Boolean,
+                    type: Object,  // Can't use Boolean
                     notify: true,
-                    value: true
+                    value: false
                 },
 
                 /** The default server URL. Used by FileThis for testing against non-production servers. */
