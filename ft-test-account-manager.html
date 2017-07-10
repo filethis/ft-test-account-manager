@@ -393,16 +393,16 @@ for convenience. Stored secrets can be cleared from storage at will.
 
             properties: {
 
-                /** Whether the FileThis Connect instance is enabled or not */
-                enabled:
+                /** Whether the FileThis Connect instance is live or not */
+                live:
                 {
                     type: Boolean,
                     notify: true,
                     value: false
                 },
 
-                /** Whether the FileThis Connect instance can be enabled or not */
-                canEnable:
+                /** Whether the FileThis Connect instance can be live or not */
+                canGoLive:
                 {
                     type: Boolean,
                     notify: true,
@@ -685,10 +685,10 @@ for convenience. Stored secrets can be cleared from storage at will.
                 this._writeToLocalStorage();
                 this._enableOrDisableButtons();
 
-                this.canEnable = this._checkCanEnable();
+                this.canGoLive = this._checkCanGoLive();
             },
 
-            _checkCanEnable: function()
+            _checkCanGoLive: function()
             {
                 if (!this.server)
                     return false;
