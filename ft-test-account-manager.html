@@ -31,10 +31,11 @@ limitations under the License.
 
 
 <!--
-`ft-test-account-manager`
-An element that provides an easy way for an partner admin to create and delete user test accounts, and to create and
-delete access tokens for the accounts. It saves settings and the current account and token in browser local storage
-for convenience. Stored secrets can be cleared from storage at will.
+`<ft-test-account-manager>`
+
+An element that allows partner admins to create user accounts for testing. Also allows the creation of user access tickets for the account.
+
+@demo
 -->
 
 <dom-module id="ft-test-account-manager">
@@ -401,7 +402,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     value: false
                 },
 
-                /** Whether the FileThis Connect instance can be live or not */
+                /** Whether the FileThis Connect instance _can_ be live or not */
                 canGoLive:
                 {
                     type: Object,
@@ -465,6 +466,7 @@ for convenience. Stored secrets can be cleared from storage at will.
                     observer: "_onSettingChanged"
                 },
 
+                /** The current user access token. */
                 token: {
                     type: String,
                     notify: true,
@@ -472,9 +474,15 @@ for convenience. Stored secrets can be cleared from storage at will.
                     observer: "_onSettingChanged"
                 },
 
-                /** Whether to display the server URL field. Used by FileThis for testing against non-production servers. */
+                /**
+                 * Whether to display the server URL field. Used by FileThis for testing against non-production servers.
+                 *
+                 * Note that you can provide the strings "true" and "false" as attribute values.
+                 *
+                 * @type {boolean}
+                 */
                 showServer: {
-                    type: Object,  // Can't use Boolean
+                    type: Object,
                     notify: true,
                     value: false
                 },
@@ -489,61 +497,73 @@ for convenience. Stored secrets can be cleared from storage at will.
 
                 // Properties that enable/disable buttons ---------------------------------------------------
 
+                /** True when the server is not already set to the default. */
                 _canSetDefaultServer: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for testing the current server are valid. */
                 _canTestServer: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for testing the API credentials are valid. */
                 _canTestApiCredentials: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for creating a new FileThis user account are valid. */
                 _canCreateUserAccount: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for deleting the current FileThis user account are valid. */
                 _canDeleteUserAccount: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for testing access to the current FileThis user account are valid. */
                 _canTestUserAccount: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for creating a new FileThis user access token are valid. */
                 _canCreateToken: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for deleting the current FileThis user access token are valid. */
                 _canDeleteToken: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the prerequisites for testing the current FileThis user access token are valid. */
                 _canTestToken: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when there are any secrets that can be cleared. */
                 _canClearSecrets: {
                     type: Boolean,
                     value: false
                 },
 
+                /** True when the user has told us to display secrets in UI fields without obfuscation. */
                 _showSecrets: {
                     type: Boolean,
                     value: false
                 },
 
+                /** Used internally when reading/writing values to local storage. */
                 _suppressWriteToLocalStorage: {
                     type: Boolean,
                     value: true
