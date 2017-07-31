@@ -20,14 +20,14 @@ limitations under the License.
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
 <link rel="import" href="../ft-labeled-icon-button/ft-labeled-icon-button.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="custom-validator.html">
-
-<script src="../validator-js/validator.js"></script>
+<link rel="import" href="validator-js-validator.html">
 
 
 <!--
@@ -98,14 +98,15 @@ An element that allows partner admins to create user accounts for testing. Also 
             <div class="section-body layout horizontal center" hidden$="[[!showServer]]">
 
                 <!-- Server -->
-                <custom-validator id="urlValidator" validator-name="url-validator"></custom-validator>
+                <validator-js-validator name="isURL"></validator-js-validator>
                 <paper-input
                         id="serverField"
                         value="{{server}}"
                         label="URL"
                         auto-validate
-                        validator="url-validator"
+                        validator="isURL"
                         error-message="Must be a valid URL"
+                        invalid="{{_serverInvalid}}"
                         style="width:100%;">
                 </paper-input>
 
@@ -149,7 +150,7 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             <div class="section-title">API Credentials</div>
 
-            <custom-validator id="alphanumericValidator" validator-name="alphanumeric-validator"></custom-validator>
+            <validator-js-validator name="isAlphanumeric"></validator-js-validator>
 
             <!-- API Key -->
             <div class="section-body layout horizontal center">
@@ -162,8 +163,9 @@ An element that allows partner admins to create user accounts for testing. Also 
                         value="{{apiKey}}"
                         type="[[_computeInputType(_showSecrets)]]"
                         auto-validate
-                        validator="alphanumeric-validator"
+                        validator="isAlphanumeric"
                         error-message="Must be an alphanumeric string"
+                        invalid="{{_apiKeyInvalid}}"
                         char-counter
                         style="width:100%;">
                 </paper-input>
@@ -186,8 +188,9 @@ An element that allows partner admins to create user accounts for testing. Also 
                         value="{{apiSecret}}"
                         type="[[_computeInputType(_showSecrets)]]"
                         auto-validate
-                        validator="alphanumeric-validator"
+                        validator="isAlphanumeric"
                         error-message="Must be an alphanumeric string"
+                        invalid="{{_apiSecretInvalid}}"
                         char-counter
                         style="width:100%;">
                 </paper-input>
@@ -292,18 +295,27 @@ An element that allows partner admins to create user accounts for testing. Also 
                         id="timeoutField"
                         label="Timeout in Minutes"
                         value="{{timeout}}"
+                        auto-validate
+                        pattern="[0-9]+"
+                        error-message="Must be an integer"
+                        invalid="{{_timeoutInvalid}}"
                         style="width:150px;">
                 </paper-input>
 
                 <div class="layout horizontal center">
 
                     <!-- token -->
+                    <validator-js-validator name="isAscii"></validator-js-validator>
                     <paper-input
                             id="tokenField"
                             label="Token"
                             value="{{token}}"
                             type="[[_computeInputType(_showSecrets)]]"
                             char-counter
+                            auto-validate
+                            validator="isAscii"
+                            error-message="Must be valid token string"
+                            invalid="{{_tokenInvalid}}"
                             style="width:100%;">
                     </paper-input>
 
@@ -415,7 +427,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The path under the baseUrl used for API requests. For example: "/api/v1". Note that you should use a leading slash, and no trailing slash. */
@@ -423,7 +435,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 {
                     type: String,
                     value: "/api/v1",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The Partner API key. */
@@ -431,7 +443,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The Partner API secret. */
@@ -439,7 +451,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The user's FileThis account id. */
@@ -447,7 +459,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The user's FileThis user access token. Used to authenticate and authorize requests to the FileThis API endpoints. */
@@ -463,7 +475,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: Number,
                     notify: true,
                     value: 120, // Two hours
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /** The current user access token. */
@@ -471,7 +483,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChanged"
+                    observer: "_onSettingChangedDebounced"
                 },
 
                 /**
@@ -492,6 +504,43 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: false,
                     value: "https://filethis.com"
+                },
+
+                // Properties that track validity of fields ---------------------------------------------------
+
+                /** True when the server value is invalid. */
+                _serverInvalid: {
+                    type: Boolean,
+                    value: false,
+                    observer: "_onInvalidChangedDebounced"
+                },
+
+                /** True when the API key value is invalid. */
+                _apiKeyInvalid: {
+                    type: Boolean,
+                    value: false,
+                    observer: "_onInvalidChangedDebounced"
+                },
+
+                /** True when the API secret value is invalid. */
+                _apiKeySecretInvalid: {
+                    type: Boolean,
+                    value: false,
+                    observer: "_onInvalidChangedDebounced"
+                },
+
+                /** True when the timeout value is invalid. */
+                _timeoutInvalid: {
+                    type: Boolean,
+                    value: false,
+                    observer: "_onInvalidChangedDebounced"
+                },
+
+                /** True when the token value is invalid. */
+                _tokenInvalid: {
+                    type: Boolean,
+                    value: false,
+                    observer: "_onInvalidChangedDebounced"
                 },
 
 
@@ -575,36 +624,11 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             ready: function()
             {
-                this.$.urlValidator.validate = this._validateUrl.bind(this);
-                this.$.alphanumericValidator.validate = this._validateAlphanumeric.bind(this);
-
                 this.async(function()
                 {
                     this._readFromLocalStorage();
                     this._enableOrDisableButtons();
                 }, 200)
-            },
-
-
-            // Validation functions ---------------------------------------------------
-
-            _validateUrl: function(value)
-            {
-                if (!value)
-                    return true;
-                var options =
-                    {
-                        protocols: ["http", "https"],
-                        require_protocol: true
-                    };
-                return validator.isURL(value, options);
-            },
-
-            _validateAlphanumeric: function(value)
-            {
-                if (!value)
-                    return true;
-                return validator.isAlphanumeric(value);
             },
 
 
@@ -686,6 +710,39 @@ An element that allows partner admins to create user accounts for testing. Also 
                 return false;
             },
 
+            _onSettingChangedDebounced: function(to, from)
+            {
+                this._settingChangedDebouncer = Polymer.Debouncer.debounce
+                (
+                    this._settingChangedDebouncer,
+                    Polymer.Async.timeOut.after(60),
+                    this._onSettingChanged.bind(this)
+                );
+            },
+
+            _onSettingChanged: function(to, from)
+            {
+                this._writeToLocalStorage();
+                this._enableOrDisableButtons();
+
+                this.canGoLive = this._checkCanGoLive();
+            },
+
+            _onInvalidChangedDebounced: function(to, from)
+            {
+                this._invalidChangedDebouncer = Polymer.Debouncer.debounce
+                (
+                    this._invalidChangedDebouncer,
+                    Polymer.Async.timeOut.after(60),
+                    this._onInvalidChanged.bind(this)
+                );
+            },
+
+            _onInvalidChanged: function(to, from)
+            {
+                this._enableOrDisableButtons();
+            },
+
             _enableOrDisableButtons: function()
             {
                 this._canSetDefaultServer = this._checkCanSetDefaultServer();
@@ -698,14 +755,6 @@ An element that allows partner admins to create user accounts for testing. Also 
                 this._canDeleteToken = this._checkCanUseToken();
                 this._canTestToken = this._checkCanUseToken();
                 this._canClearSecrets = this._checkCanClearSecrets();
-            },
-
-            _onSettingChanged: function(to, from)
-            {
-                this._writeToLocalStorage();
-                this._enableOrDisableButtons();
-
-                this.canGoLive = this._checkCanGoLive();
             },
 
             _checkCanGoLive: function()
