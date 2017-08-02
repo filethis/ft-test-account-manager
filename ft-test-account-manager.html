@@ -786,21 +786,21 @@ An element that allows partner admins to create user accounts for testing. Also 
                 this._suppressWriteToLocalStorage = true;
                 try
                 {
-                    var server = this._readFromLocalStorageSingle("server");
+                    var server = this._readFromLocalStorageSingle(this.localName + "server");
                     if (server)
                         this.server = server;
                     else
                         this.server = this.defaultServer;
-                    this.apiKey = this._readFromLocalStorageSingle("apiKey");
-                    this.apiSecret = this._readFromLocalStorageSingle("apiSecret");
-                    this.userAccountId = this._readFromLocalStorageSingle("userAccountId");
-                    this.tokenId = this._readFromLocalStorageSingle("tokenId");
-                    var timeout = this._readFromLocalStorageSingle("timeout");
+                    this.apiKey = this._readFromLocalStorageSingle(this.localName + "apiKey");
+                    this.apiSecret = this._readFromLocalStorageSingle(this.localName + "apiSecret");
+                    this.userAccountId = this._readFromLocalStorageSingle(this.localName + "userAccountId");
+                    this.tokenId = this._readFromLocalStorageSingle(this.localName + "tokenId");
+                    var timeout = this._readFromLocalStorageSingle(this.localName + "timeout");
                     if (!!timeout)
                         this.timeout = timeout;
                     else
                         this.timeout = 120;  // Two hours
-                    this.token = this._readFromLocalStorageSingle("token");
+                    this.token = this._readFromLocalStorageSingle(this.localName + "token");
                 }
                 finally
                 {
@@ -812,13 +812,13 @@ An element that allows partner admins to create user accounts for testing. Also 
             {
                 if (this._suppressWriteToLocalStorage === undefined || this._suppressWriteToLocalStorage)
                     return;
-                localStorage.setItem("server", this.server);
-                localStorage.setItem("apiKey", this.apiKey);
-                localStorage.setItem("apiSecret", this.apiSecret);
-                localStorage.setItem("tokenId", this.tokenId);
-                localStorage.setItem("timeout", this.timeout);
-                localStorage.setItem("token", this.token);
-                localStorage.setItem("userAccountId", this.userAccountId);
+                localStorage.setItem(this.localName + "server", this.server);
+                localStorage.setItem(this.localName + "apiKey", this.apiKey);
+                localStorage.setItem(this.localName + "apiSecret", this.apiSecret);
+                localStorage.setItem(this.localName + "tokenId", this.tokenId);
+                localStorage.setItem(this.localName + this.localName + "timeout", this.timeout);
+                localStorage.setItem(this.localName + "token", this.token);
+                localStorage.setItem(this.localName + "userAccountId", this.userAccountId);
             },
 
             _readFromLocalStorageSingle: function(name)
