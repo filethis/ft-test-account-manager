@@ -4,6 +4,7 @@
   "main": "ft-test-account-manager.html",
   "dependencies": {
     "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.13",
+    "ft-element-demo": "filethis/ft-element-demo#^0.0.1",
     "ft-error-behavior": "filethis/ft-error-behavior#^0.0.11",
     "ft-http-behavior": "filethis/ft-http-behavior#^0.0.11",
     "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.10",
