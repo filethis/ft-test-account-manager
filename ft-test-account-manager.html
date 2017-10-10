@@ -47,6 +47,9 @@ An element that allows partner admins to create user accounts for testing. Also 
         <style>
             :host {
                 display:block;
+                width:400px;
+                @apply --layout-vertical;
+
                 @apply --ft-test-account-manager;
             }
         </style>
@@ -88,309 +91,303 @@ An element that allows partner admins to create user accounts for testing. Also 
             }
         </style>
 
-        <div
-                class="layout vertical"
-                style="width:400px; height:100%; padding:0; ">
+        <!-- Server -->
+
+        <div class="section-title" hidden$="[[!showServer]]">FileThis Server</div>
+
+        <div class="section-body layout horizontal center" hidden$="[[!showServer]]">
 
             <!-- Server -->
+            <validator-js-validator name="isURL"></validator-js-validator>
+            <paper-input
+                    id="serverField"
+                    value="{{server}}"
+                    label="URL"
+                    auto-validate
+                    validator="isURL"
+                    error-message="Must be a valid URL"
+                    invalid="{{_serverInvalid}}"
+                    style="width:100%;">
+            </paper-input>
 
-            <div class="section-title" hidden$="[[!showServer]]">FileThis Server</div>
+            <div class="field-to-buttons-space"></div>
 
-            <div class="section-body layout horizontal center" hidden$="[[!showServer]]">
+            <!-- Default button -->
+            <ft-labeled-icon-button
+                    id="defaultServerButton"
+                    icon="undo"
+                    label="Default"
+                    disabled="[[!_canSetDefaultServer]]"
+                    on-tap="_onDefaultServerButtonClicked">
+            </ft-labeled-icon-button>
 
-                <!-- Server -->
-                <validator-js-validator name="isURL"></validator-js-validator>
-                <paper-input
-                        id="serverField"
-                        value="{{server}}"
-                        label="URL"
-                        auto-validate
-                        validator="isURL"
-                        error-message="Must be a valid URL"
-                        invalid="{{_serverInvalid}}"
-                        style="width:100%;">
-                </paper-input>
+            <div class="inter-button-space"></div>
 
-                <div class="field-to-buttons-space"></div>
+            <!-- Test Server button -->
+            <ft-labeled-icon-button
+                    id="testServerButton"
+                    icon="check"
+                    label="Test"
+                    disabled="[[!_canTestServer]]"
+                    on-tap="_onTestServerButtonClicked">
+            </ft-labeled-icon-button>
+            <paper-tooltip
+                    id="testServerButtonTooltip"
+                    manual-mode="true"
+                    for="testServerButton"
+                    position="right"
+                    animation-delay="0"
+                    offset="5">
+                Server URL is valid and reachable
+            </paper-tooltip>
 
-                <!-- Default button -->
-                <ft-labeled-icon-button
-                        id="defaultServerButton"
-                        icon="undo"
-                        label="Default"
-                        disabled="[[!_canSetDefaultServer]]"
-                        on-tap="_onDefaultServerButtonClicked">
-                </ft-labeled-icon-button>
+        </div>
 
-                <div class="inter-button-space"></div>
+        <!-- Divider -->
+        <div class="section-divider" hidden$="[[!showServer]]"></div>
 
-                <!-- Test Server button -->
-                <ft-labeled-icon-button
-                        id="testServerButton"
-                        icon="check"
-                        label="Test"
-                        disabled="[[!_canTestServer]]"
-                        on-tap="_onTestServerButtonClicked">
-                </ft-labeled-icon-button>
-                <paper-tooltip
-                        id="testServerButtonTooltip"
-                        manual-mode="true"
-                        for="testServerButton"
-                        position="right"
-                        animation-delay="0"
-                        offset="5">
-                    Server URL is valid and reachable
-                </paper-tooltip>
+        <!-- API Credentials -->
 
-            </div>
+        <div class="section-title">API Credentials</div>
 
-            <!-- Divider -->
-            <div class="section-divider" hidden$="[[!showServer]]"></div>
+        <validator-js-validator name="isAlphanumeric"></validator-js-validator>
 
-            <!-- API Credentials -->
-
-            <div class="section-title">API Credentials</div>
-
-            <validator-js-validator name="isAlphanumeric"></validator-js-validator>
+        <!-- API Key -->
+        <div class="section-body layout horizontal center">
 
             <!-- API Key -->
-            <div class="section-body layout horizontal center">
+            <paper-input
+                    id="apiKeyField"
+                    autofocus
+                    label="API Key"
+                    value="{{apiKey}}"
+                    type="[[_computeInputType(_showSecrets)]]"
+                    auto-validate
+                    validator="isAlphanumeric"
+                    error-message="Must be an alphanumeric string"
+                    invalid="{{_apiKeyInvalid}}"
+                    char-counter
+                    style="width:100%;">
+            </paper-input>
 
-                <!-- API Key -->
-                <paper-input
-                        id="apiKeyField"
-                        autofocus
-                        label="API Key"
-                        value="{{apiKey}}"
-                        type="[[_computeInputType(_showSecrets)]]"
-                        auto-validate
-                        validator="isAlphanumeric"
-                        error-message="Must be an alphanumeric string"
-                        invalid="{{_apiKeyInvalid}}"
-                        char-counter
-                        style="width:100%;">
-                </paper-input>
+            <div class="field-to-buttons-space"></div>
 
-                <div class="field-to-buttons-space"></div>
+            <!-- Spacer, same width as "Test" button on line below -->
+            <div style="width:49px; min-width:49px; height:49px; max-height:49px;"></div>
 
-                <!-- Spacer, same width as "Test" button on line below -->
-                <div style="width:49px; min-width:49px; height:49px; max-height:49px;"></div>
+        </div>
 
-            </div>
+        <!-- API Secret -->
+        <div class="section-body layout horizontal center">
 
             <!-- API Secret -->
-            <div class="section-body layout horizontal center">
+            <paper-input
+                    id="apiSecretField"
+                    autofocus
+                    label="API Secret"
+                    value="{{apiSecret}}"
+                    type="[[_computeInputType(_showSecrets)]]"
+                    auto-validate
+                    validator="isAlphanumeric"
+                    error-message="Must be an alphanumeric string"
+                    invalid="{{_apiSecretInvalid}}"
+                    char-counter
+                    style="width:100%;">
+            </paper-input>
 
-                <!-- API Secret -->
+            <div class="field-to-buttons-space"></div>
+
+            <!-- Test API credentials button -->
+            <ft-labeled-icon-button
+                    id="testApiCredentialsButton"
+                    icon="check"
+                    label="Test"
+                    disabled="[[!_canTestApiCredentials]]"
+                    on-tap="_onTestApiCredentialsButtonClicked">
+            </ft-labeled-icon-button>
+            <paper-tooltip
+                    id="testApiCredentialsButtonTooltip"
+                    manual-mode="true"
+                    for="testApiCredentialsButton"
+                    position="right"
+                    animation-delay="0"
+                    offset="5">
+                The API credentials are valid.
+            </paper-tooltip>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider"></div>
+
+        <!-- User Account -->
+
+        <div class="section-title">User Account</div>
+
+        <div class="section-body layout horizontal center">
+
+            <!-- User acccount id -->
+            <paper-input
+                    id="userAccountIdField"
+                    label="Id"
+                    value="{{userAccountId}}"
+                    auto-validate
+                    pattern="[0-9]+"
+                    error-message="Not a valid FileThis acccount id"
+                    style="width:100%;">
+            </paper-input>
+
+            <div class="field-to-buttons-space"></div>
+
+            <!-- Delete Account button -->
+            <ft-labeled-icon-button
+                    id="deleteAccountButton"
+                    icon="remove"
+                    label="Delete"
+                    disabled="[[!_canDeleteUserAccount]]"
+                    on-tap="_onDeleteAccountButtonClicked">
+            </ft-labeled-icon-button>
+
+            <div class="inter-button-space"></div>
+
+            <!-- Create Account button -->
+            <ft-labeled-icon-button
+                    id="createAccountButton"
+                    icon="add"
+                    label="New"
+                    disabled="[[!_canCreateUserAccount]]"
+                    on-tap="_onCreateAccountButtonClicked">
+            </ft-labeled-icon-button>
+
+            <div class="inter-button-space"></div>
+
+            <!-- Test Account button -->
+            <ft-labeled-icon-button
+                    id="testAccountButton"
+                    icon="check"
+                    label="Test"
+                    disabled="[[!_canTestUserAccount]]"
+                    on-tap="_onTestAccountButtonClicked">
+            </ft-labeled-icon-button>
+            <paper-tooltip
+                    id="testAccountButtonTooltip"
+                    manual-mode="true"
+                    for="testAccountButton"
+                    position="right"
+                    animation-delay="0"
+                    offset="5">
+                The user account id is valid.
+            </paper-tooltip>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="section-divider"></div>
+
+        <!-- User Access -->
+
+        <div class="section-title">User Access Token</div>
+
+        <div class="section-body layout vertical">
+
+            <!-- timeout -->
+            <paper-input
+                    id="timeoutField"
+                    label="Timeout in Minutes"
+                    value="{{timeout}}"
+                    auto-validate
+                    pattern="[0-9]+"
+                    error-message="Must be an integer"
+                    invalid="{{_timeoutInvalid}}"
+                    style="width:150px;">
+            </paper-input>
+
+            <div class="layout horizontal center">
+
+                <!-- token -->
+                <validator-js-validator name="isAscii"></validator-js-validator>
                 <paper-input
-                        id="apiSecretField"
-                        autofocus
-                        label="API Secret"
-                        value="{{apiSecret}}"
+                        id="tokenField"
+                        label="Token"
+                        value="{{token}}"
                         type="[[_computeInputType(_showSecrets)]]"
-                        auto-validate
-                        validator="isAlphanumeric"
-                        error-message="Must be an alphanumeric string"
-                        invalid="{{_apiSecretInvalid}}"
                         char-counter
-                        style="width:100%;">
-                </paper-input>
-
-                <div class="field-to-buttons-space"></div>
-
-                <!-- Test API credentials button -->
-                <ft-labeled-icon-button
-                        id="testApiCredentialsButton"
-                        icon="check"
-                        label="Test"
-                        disabled="[[!_canTestApiCredentials]]"
-                        on-tap="_onTestApiCredentialsButtonClicked">
-                </ft-labeled-icon-button>
-                <paper-tooltip
-                        id="testApiCredentialsButtonTooltip"
-                        manual-mode="true"
-                        for="testApiCredentialsButton"
-                        position="right"
-                        animation-delay="0"
-                        offset="5">
-                    The API credentials are valid.
-                </paper-tooltip>
-
-            </div>
-
-            <!-- Divider -->
-            <div class="section-divider"></div>
-
-            <!-- User Account -->
-
-            <div class="section-title">User Account</div>
-
-            <div class="section-body layout horizontal center">
-
-                <!-- User acccount id -->
-                <paper-input
-                        id="userAccountIdField"
-                        label="Id"
-                        value="{{userAccountId}}"
                         auto-validate
-                        pattern="[0-9]+"
-                        error-message="Not a valid FileThis acccount id"
+                        validator="isAscii"
+                        error-message="Must be valid token string"
+                        invalid="{{_tokenInvalid}}"
                         style="width:100%;">
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
-                <!-- Delete Account button -->
+                <!-- Delete Token button -->
                 <ft-labeled-icon-button
-                        id="deleteAccountButton"
+                        id="deleteTokenButton"
                         icon="remove"
                         label="Delete"
-                        disabled="[[!_canDeleteUserAccount]]"
-                        on-tap="_onDeleteAccountButtonClicked">
+                        disabled="[[!_canDeleteToken]]"
+                        on-tap="_onDeleteTokenButtonClicked">
                 </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
-                <!-- Create Account button -->
+                <!-- Create Token button -->
                 <ft-labeled-icon-button
-                        id="createAccountButton"
+                        id="createTokenButton"
                         icon="add"
                         label="New"
-                        disabled="[[!_canCreateUserAccount]]"
-                        on-tap="_onCreateAccountButtonClicked">
+                        disabled="[[!_canCreateToken]]"
+                        on-tap="_onCreateTokenButtonClicked">
                 </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
-                <!-- Test Account button -->
+                <!-- Test Token button -->
                 <ft-labeled-icon-button
-                        id="testAccountButton"
+                        id="testTokenButton"
                         icon="check"
                         label="Test"
-                        disabled="[[!_canTestUserAccount]]"
-                        on-tap="_onTestAccountButtonClicked">
+                        disabled="[[!_canTestToken]]"
+                        on-tap="_onTestTokenButtonClicked">
                 </ft-labeled-icon-button>
                 <paper-tooltip
-                        id="testAccountButtonTooltip"
+                        id="testTokenButtonTooltip"
                         manual-mode="true"
-                        for="testAccountButton"
+                        for="testTokenButton"
                         position="right"
                         animation-delay="0"
                         offset="5">
-                    The user account id is valid.
+                    The token is valid.
                 </paper-tooltip>
-
             </div>
+        </div>
 
-            <!-- Divider -->
-            <div class="section-divider"></div>
+        <!-- Divider -->
+        <!--<div class="section-divider"></div>-->
+        <div class="flex"></div>
 
-            <!-- User Access -->
+        <!-- Secrets -->
+        <div
+                class="section-body layout horizontal center"
+                style="margin-top:16px;">
 
-            <div class="section-title">User Access Token</div>
+            <!-- Show Secrets checkbox -->
+            <paper-checkbox
+                    checked="{{_showSecrets}}">
+                Show Secrets
+            </paper-checkbox>
 
-            <div class="section-body layout vertical">
-
-                <!-- timeout -->
-                <paper-input
-                        id="timeoutField"
-                        label="Timeout in Minutes"
-                        value="{{timeout}}"
-                        auto-validate
-                        pattern="[0-9]+"
-                        error-message="Must be an integer"
-                        invalid="{{_timeoutInvalid}}"
-                        style="width:150px;">
-                </paper-input>
-
-                <div class="layout horizontal center">
-
-                    <!-- token -->
-                    <validator-js-validator name="isAscii"></validator-js-validator>
-                    <paper-input
-                            id="tokenField"
-                            label="Token"
-                            value="{{token}}"
-                            type="[[_computeInputType(_showSecrets)]]"
-                            char-counter
-                            auto-validate
-                            validator="isAscii"
-                            error-message="Must be valid token string"
-                            invalid="{{_tokenInvalid}}"
-                            style="width:100%;">
-                    </paper-input>
-
-                    <div class="field-to-buttons-space"></div>
-
-                    <!-- Delete Token button -->
-                    <ft-labeled-icon-button
-                            id="deleteTokenButton"
-                            icon="remove"
-                            label="Delete"
-                            disabled="[[!_canDeleteToken]]"
-                            on-tap="_onDeleteTokenButtonClicked">
-                    </ft-labeled-icon-button>
-
-                    <div class="inter-button-space"></div>
-
-                    <!-- Create Token button -->
-                    <ft-labeled-icon-button
-                            id="createTokenButton"
-                            icon="add"
-                            label="New"
-                            disabled="[[!_canCreateToken]]"
-                            on-tap="_onCreateTokenButtonClicked">
-                    </ft-labeled-icon-button>
-
-                    <div class="inter-button-space"></div>
-
-                    <!-- Test Token button -->
-                    <ft-labeled-icon-button
-                            id="testTokenButton"
-                            icon="check"
-                            label="Test"
-                            disabled="[[!_canTestToken]]"
-                            on-tap="_onTestTokenButtonClicked">
-                    </ft-labeled-icon-button>
-                    <paper-tooltip
-                            id="testTokenButtonTooltip"
-                            manual-mode="true"
-                            for="testTokenButton"
-                            position="right"
-                            animation-delay="0"
-                            offset="5">
-                        The token is valid.
-                    </paper-tooltip>
-                </div>
-            </div>
-
-            <!-- Divider -->
-            <!--<div class="section-divider"></div>-->
             <div class="flex"></div>
 
-            <!-- Secrets -->
-            <div
-                    class="section-body layout horizontal center"
-                    style="margin-top:16px;">
-
-                <!-- Show Secrets checkbox -->
-                <paper-checkbox
-                        checked="{{_showSecrets}}">
-                    Show Secrets
-                </paper-checkbox>
-
-                <div class="flex"></div>
-
-                <!-- Clear Stored Secrets button -->
-                <ft-labeled-icon-button
-                        id="clearSecretsButton"
-                        icon="clear"
-                        label="Clear"
-                        disabled="[[!_canClearSecrets]]"
-                        on-tap="_onClearSecretsButtonClicked">
-                </ft-labeled-icon-button>
-            </div>
-
+            <!-- Clear Stored Secrets button -->
+            <ft-labeled-icon-button
+                    id="clearSecretsButton"
+                    icon="clear"
+                    label="Clear"
+                    disabled="[[!_canClearSecrets]]"
+                    on-tap="_onClearSecretsButtonClicked">
+            </ft-labeled-icon-button>
         </div>
 
         <!-- Confirmation dialog -->
