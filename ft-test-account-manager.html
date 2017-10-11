@@ -425,7 +425,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The path under the baseUrl used for API requests. For example: "/api/v1". Note that you should use a leading slash, and no trailing slash. */
@@ -433,7 +433,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 {
                     type: String,
                     value: "/api/v1",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The Partner API key. */
@@ -441,7 +441,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The Partner API secret. */
@@ -449,7 +449,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The user's FileThis account id. */
@@ -457,7 +457,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The user's FileThis user access token. Used to authenticate and authorize requests to the FileThis API endpoints. */
@@ -473,7 +473,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: Number,
                     notify: true,
                     value: 120, // Two hours
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /** The current user access token. */
@@ -481,7 +481,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: "",
-                    observer: "_onSettingChangedDebounced"
+                    observer: "_onSettingChanged"
                 },
 
                 /**
@@ -510,35 +510,35 @@ An element that allows partner admins to create user accounts for testing. Also 
                 _serverInvalid: {
                     type: Boolean,
                     value: false,
-                    observer: "_onInvalidChangedDebounced"
+                    observer: "_onInvalidChanged"
                 },
 
                 /** True when the API key value is invalid. */
                 _apiKeyInvalid: {
                     type: Boolean,
                     value: false,
-                    observer: "_onInvalidChangedDebounced"
+                    observer: "_onInvalidChanged"
                 },
 
                 /** True when the API secret value is invalid. */
                 _apiKeySecretInvalid: {
                     type: Boolean,
                     value: false,
-                    observer: "_onInvalidChangedDebounced"
+                    observer: "_onInvalidChanged"
                 },
 
                 /** True when the timeout value is invalid. */
                 _timeoutInvalid: {
                     type: Boolean,
                     value: false,
-                    observer: "_onInvalidChangedDebounced"
+                    observer: "_onInvalidChanged"
                 },
 
                 /** True when the token value is invalid. */
                 _tokenInvalid: {
                     type: Boolean,
                     value: false,
-                    observer: "_onInvalidChangedDebounced"
+                    observer: "_onInvalidChanged"
                 },
 
 
@@ -708,17 +708,17 @@ An element that allows partner admins to create user accounts for testing. Also 
                 return false;
             },
 
-            _onSettingChangedDebounced: function(to, from)
+            _onSettingChanged: function(to, from)
             {
                 this._settingChangedDebouncer = Polymer.Debouncer.debounce
                 (
                     this._settingChangedDebouncer,
                     Polymer.Async.timeOut.after(60),
-                    this._onSettingChanged.bind(this)
+                    this._onSettingChangedDebounced.bind(this)
                 );
             },
 
-            _onSettingChanged: function(to, from)
+            _onSettingChangedDebounced: function(to, from)
             {
                 this._writeToLocalStorage();
                 this._enableOrDisableButtons();
@@ -726,17 +726,17 @@ An element that allows partner admins to create user accounts for testing. Also 
                 this.canGoLive = this._checkCanGoLive();
             },
 
-            _onInvalidChangedDebounced: function(to, from)
+            _onInvalidChanged: function(to, from)
             {
                 this._invalidChangedDebouncer = Polymer.Debouncer.debounce
                 (
                     this._invalidChangedDebouncer,
                     Polymer.Async.timeOut.after(60),
-                    this._onInvalidChanged.bind(this)
+                    this._onInvalidChangedDebounced.bind(this)
                 );
             },
 
-            _onInvalidChanged: function(to, from)
+            _onInvalidChangedDebounced: function(to, from)
             {
                 this._enableOrDisableButtons();
             },
