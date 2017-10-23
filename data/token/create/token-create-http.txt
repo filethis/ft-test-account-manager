@@ -1,0 +1,9 @@
+POST /api/v1/accounts/{{ACCOUNT_ID}}/tokens HTTP/1.1
+Host: {{SERVER}}
+Content-Type: text/plain; charset=utf-8
+Authorization: Basic {{BASIC}}
+Cache-Control: no-cache
+
+{
+  "expiresIn": {{EXPIRES_IN}}
+}

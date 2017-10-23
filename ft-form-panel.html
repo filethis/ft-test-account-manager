@@ -19,6 +19,7 @@ limitations under the License.
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../polymer/polymer.html">
 
 
@@ -37,39 +38,59 @@ An element that displays a header with a title, a hide/show button, and a slot f
         <style include="iron-flex iron-flex-alignment iron-positioning"></style>
 
         <style>
-            :host {
+            :host
+            {
                 display:block;
+                overflow:hidden;
                 @apply --layout-vertical;
             }
         </style>
 
         <!-- Header -->
-        <div
-                class="layout horizontal center">
+        <div class="layout horizontal center">
+
+            <!-- Show/Hide button -->
+            <paper-icon-button
+                id="showHideButton"
+                icon="clear"
+                style="width:35px; height:35px; "
+                on-tap="_onShowOrHideButtonClicked"
+            >
+            </paper-icon-button>
 
             <!-- Title -->
             <div
-                    class="flex"
-                    style="font-family:'Roboto', sans-serif; font-size:14pt;">
+                style="font-family:'Roboto', sans-serif; font-size:14pt; "
+            >
                 [[title]]
             </div>
 
-            <!-- Show/Hide button -->
-            <ft-labeled-icon-button
-                    id="showHideButton"
-                    icon="arrow-upward"
-                    label="Hide"
-                    on-tap="_onShowOrHideButtonClicked">
-            </ft-labeled-icon-button>
+            <div style=width:15px;"></div>
+
+            <!-- Summary slot -->
+            <slot name="summary">
+            </slot>
+
+            <div class="flex"></div>
+
+            <!-- Controls slot -->
+            <slot name="controls">
+            </slot>
+
         </div>
 
         <!-- Content -->
-        <div class="flex" hidden$="[[!contentShown]]">
+        <div
+            class="flex"
+            style="padding-left:35px; "
+            hidden$="[[!contentShown]]"
+        >
 
             <!-- Content slot -->
             <slot
-                    id="content"
-                    name="content">
+                id="content"
+                name="content"
+            >
             </slot>
         </div>
 
@@ -116,12 +137,12 @@ An element that displays a header with a title, a hide/show button, and a slot f
                 var label;
                 if (this.contentShown)
                 {
-                    icon = "arrow-upward";
+                    icon = "clear";
                     label = "Hide";
                 }
                 else
                 {
-                    icon = "arrow-downward";
+                    icon = "add";
                     label = "Show";
                 }
                 this.$.showHideButton.icon = icon;
