@@ -2,7 +2,7 @@ import http.client
 
 conn = http.client.HTTPSConnection("{{SERVER}}")
 
-payload = "{\n  \"expiresIn\": {{EXPIRES_IN}}\n}\n"
+payload = "{ \"expiresIn\": {{EXPIRES_IN}} }"
 
 headers = {
     'content-type': "text/plain; charset=utf-8",
@@ -12,7 +12,7 @@ headers = {
 
 conn.request("POST", "/api/v1/accounts/{{ACCOUNT_ID}}/tokens", payload, headers)
 
-res = conn.getresponse()
-data = res.read()
+response = conn.getresponse()
+data = response.read()
 
 print(data.decode("utf-8"))

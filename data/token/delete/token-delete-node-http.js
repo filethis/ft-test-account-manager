@@ -1,27 +1,27 @@
 var http = require("https");
 
 var options = {
-  "method": "DELETE",
-  "hostname": "{{SERVER}}",
-  "port": null,
-  "path": "/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}",
-  "headers": {
-    "authorization": "Basic {{BASIC}}",
-    "cache-control": "no-cache"
-  }
+    "method": "DELETE",
+    "hostname": "{{SERVER}}",
+    "port": null,
+    "path": "/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}",
+    "headers": {
+        "authorization": "Basic {{BASIC}}",
+        "cache-control": "no-cache"
+    }
 };
 
-var req = http.request(options, function (res) {
-  var chunks = [];
+var request = http.request(options, function(response) {
+    var chunks = [];
 
-  res.on("data", function (chunk) {
-    chunks.push(chunk);
-  });
+    response.on("data", function(chunk) {
+        chunks.push(chunk);
+    });
 
-  res.on("end", function () {
-    var body = Buffer.concat(chunks);
-    console.log(body.toString());
-  });
+    response.on("end", function() {
+        var body = Buffer.concat(chunks);
+        console.log(body.toString());
+    });
 });
 
-req.end();
+request.end();

@@ -4,6 +4,4 @@ curl -X POST \
   -H 'authorization: Basic {{BASIC}}' \
   -H 'cache-control: no-cache' \
   -H 'content-type: text/plain; charset=utf-8' \
-  -d '{
-  "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}"
-}'
+  -d '{ "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}" }'

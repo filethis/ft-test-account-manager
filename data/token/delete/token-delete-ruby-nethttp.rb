@@ -1,7 +1,6 @@
 require 'net/http'
 require 'net/https'
 
-# Delete token (DELETE )
 def send_request
   uri = URI('{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}')
 
@@ -11,16 +10,16 @@ def send_request
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
   # Create Request
-  req =  Net::HTTP::Delete.new(uri)
+  request = Net::HTTP::Delete.new(uri)
+
   # Add headers
-  req.add_field "Authorization", "Basic {{BASIC}}"
+  request.add_field "Authorization", "Basic {{BASIC}}"
 
   # Fetch Request
-  res = http.request(req)
-  puts "Response HTTP Status Code: #{res.code}"
-  puts "Response HTTP Response Body: #{res.body}"
+  response = http.request(request)
+  puts "Response HTTP Status Code: #{response.code}"
+  puts "Response HTTP Response Body: #{response.body}"
+
 rescue StandardError => e
   puts "HTTP Request failed (#{e.message})"
 end
-
-

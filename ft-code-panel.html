@@ -139,6 +139,11 @@ An element that provides a configurable alert or confirmation dialog that return
         <!-- Clipboard -->
         <cbn-copy-clipboard id="clipboard">
         </cbn-copy-clipboard>
+
+        <!-- Code panel data -->
+        <ft-code-panel-data id="codePanelData">
+        </ft-code-panel-data>
+
     </template>
 
     <script>
@@ -156,38 +161,31 @@ An element that provides a configurable alert or confirmation dialog that return
             properties: {
 
                 server: {
-                    type: String,
-                    value: "filethis.com"
+                    type: String
                 },
 
                 apiKey: {
-                    type: String,
-                    value: ""
+                    type: String
                 },
 
                 apiSecret: {
-                    type: String,
-                    value: ""
+                    type: String
                 },
 
                 accountId: {
-                    type: String,
-                    value: "123"
+                    type: String
                 },
 
                 partnerAccountId: {
-                    type: String,
-                    value: "5434536654336"
+                    type: String
                 },
 
                 tokenId: {
-                    type: String,
-                    value: "456"
+                    type: String
                 },
 
                 expiresIn: {
-                    type: String,
-                    value: "360"
+                    type: String
                 },
 
                 _includeSecrets: {
@@ -382,8 +380,19 @@ An element that provides a configurable alert or confirmation dialog that return
                             language:'sh'
                         }
                     ]
-                }
+                },
 
+                /** True when doing development on this component. Will load data files locally. */
+                useLocalData: {
+                    type: Object,
+                    notify: true,
+                    value: false
+                }
+            },
+
+            ready: function()
+            {
+                var thing = this.codePanelData;
             },
 
             _onCopyCodeButtonClicked: function(event, detail)
@@ -432,7 +441,13 @@ An element that provides a configurable alert or confirmation dialog that return
                 var language = this._languageAndLibrary.language;
                 var fileExtension = this._mapLanguageToFileExtension(language);
                 var filename = this.resourceName + "-" + this.operationName + "-" + this.languageAndLibraryName + "." + fileExtension;
-                var url = "../bower_components/ft-test-account-manager/data/" + this.resourceName + "/" + this.operationName + "/" + filename;
+
+                var base;
+                if (this.useLocalData)
+                    base = "../bower_components/ft-test-account-manager/data/";
+                else
+                    base = "https://filethis.github.io/ft-test-account-manager/components/ft-test-account-manager/data/";
+                var url = base + this.resourceName + "/" + this.operationName + "/" + filename;
 
                 var options =
                     {

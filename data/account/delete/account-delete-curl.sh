@@ -2,4 +2,4 @@
 curl -X DELETE \
   {{SERVER}}/api/v1/accounts/ \
   -H 'authorization: Basic {{BASIC}}' \
-  -H 'cache-control: no-cache' \
+  -H 'cache-control: no-cache'

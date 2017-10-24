@@ -3,6 +3,3 @@ Authorization: Basic {{BASIC}}
 Host: {{SERVER}}
 Connection: close
 User-Agent: Paw/3.1.5 (Macintosh; OS X/10.12.6) GCDHTTPRequest
-
-
-

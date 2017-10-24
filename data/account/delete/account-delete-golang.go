@@ -13,25 +13,23 @@ func sendDeleteAccount() {
     client := &http.Client{}
 
     // Create request
-    req, err := http.NewRequest("DELETE", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}", nil)
+    request, error := http.NewRequest("DELETE", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}", nil)
 
     // Headers
-    req.Header.Add("Authorization", "Basic {{BASIC}}")
+    request.Header.Add("Authorization", "Basic {{BASIC}}")
 
     // Fetch Request
-    resp, err := client.Do(req)
+    response, error := client.Do(request)
 
-    if err != nil {
-        fmt.Println("Failure : ", err)
+    if error != nil {
+        fmt.Println("Failure : ", error)
     }
 
     // Read Response Body
-    respBody, _ := ioutil.ReadAll(resp.Body)
+    responseBody, _ := ioutil.ReadAll(response.Body)
 
     // Display Results
-    fmt.Println("response Status : ", resp.Status)
-    fmt.Println("response Headers : ", resp.Header)
-    fmt.Println("response Body : ", string(respBody))
+    fmt.Println("response Status : ", response.Status)
+    fmt.Println("response Headers : ", response.Header)
+    fmt.Println("response Body : ", string(responseBody))
 }
-
-

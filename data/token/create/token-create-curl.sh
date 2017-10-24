@@ -4,7 +4,4 @@ curl -X POST \
   -H 'authorization: Basic {{BASIC}}' \
   -H 'cache-control: no-cache' \
   -H 'content-type: text/plain; charset=utf-8' \
-  -d '{
-  "expiresIn": {{EXPIRES_IN}}
-}
-'
+  -d '{ "expiresIn": {{EXPIRES_IN}} }'

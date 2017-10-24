@@ -9,4 +9,3 @@ Content-Length: 64
 {
   "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}"
 }
-

@@ -9,7 +9,7 @@ headers = {
 
 conn.request("DELETE", "/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}", headers=headers)
 
-res = conn.getresponse()
-data = res.read()
+response = conn.getresponse()
+data = response.read()
 
 print(data.decode("utf-8"))

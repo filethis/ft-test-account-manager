@@ -1,12 +1,11 @@
-var data = "{\n  \"expiresIn\": {{EXPIRES_IN}}\n}\n";
+var data = "{ \"expiresIn\": {{EXPIRES_IN}} }";
 
 var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 
-xhr.addEventListener("readystatechange", function () {
-  if (this.readyState === 4) {
-    console.log(this.responseText);
-  }
+xhr.addEventListener("readystatechange", function() {
+    if (this.readyState === 4)
+        console.log(this.responseText);
 });
 
 xhr.open("POST", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens");

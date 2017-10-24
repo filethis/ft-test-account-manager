@@ -1,12 +1,11 @@
-var data = "{\n  \"partnerAccountId\": \"{{PARTNER_ACCOUNT_ID}}\"\n}";
+var data = "{ \"partnerAccountId\": \"{{PARTNER_ACCOUNT_ID}}\" }";
 
 var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 
-xhr.addEventListener("readystatechange", function () {
-  if (this.readyState === 4) {
-    console.log(this.responseText);
-  }
+xhr.addEventListener("readystatechange", function() {
+    if (this.readyState === 4)
+        console.log(this.responseText);
 });
 
 xhr.open("POST", "{{SERVER}}/api/v1/accounts");

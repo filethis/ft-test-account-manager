@@ -1,11 +1,9 @@
-// Delete account (DELETE {{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}})
-
 jQuery.ajax({
     url: "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}",
     type: "DELETE",
     headers: {
-        "Authorization": "Basic {{BASIC}}",
-    },
+        "Authorization": "Basic {{BASIC}}"
+    }
 })
 .done(function(data, textStatus, jqXHR) {
     console.log("HTTP Request Succeeded: " + jqXHR.status);
@@ -17,5 +15,3 @@ jQuery.ajax({
 .always(function() {
     /* ... */
 });
-
-

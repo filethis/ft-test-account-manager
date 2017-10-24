@@ -56,6 +56,18 @@ An element that provides a configurable alert or confirmation dialog that return
             <ft-code-panel
                 id="codePanel"
                 class="flex"
+                resource-title="[[resourceTitle]]"
+                operation-name="[[operationName]]"
+                resource-name="[[resourceName]]"
+                language-and-library-name="[[languageAndLibraryName]]"
+                server="[[server]]"
+                api-key="[[apiKey]]"
+                api-secret="[[apiSecret]]"
+                account-id="[[accountId]]"
+                partner-account-id="[[partnerAccountId]]"
+                token-id="[[tokenId]]"
+                expires-in="[[expiresIn]]"
+                use-local-data="[[useLocalData]]"
             >
             </ft-code-panel>
 
@@ -80,35 +92,58 @@ An element that provides a configurable alert or confirmation dialog that return
             is: 'ft-code-window',
 
             properties: {
+
+                resourceTitle: {
+                    type: String
+                },
+
+                operationName: {
+                    type: String
+                },
+
+                resourceName: {
+                    type: String
+                },
+
+                languageAndLibraryName: {
+                    type: String
+                },
+
+                server: {
+                    type: String
+                },
+
+                apiKey: {
+                    type: String
+                },
+
+                apiSecret: {
+                    type: String
+                },
+
+                accountId: {
+                    type: String
+                },
+
+                partnerAccountId: {
+                    type: String
+                },
+
+                tokenId: {
+                    type: String
+                },
+
+                expiresIn: {
+                    type: String
+                },
+
+                useLocalData: {
+                    type: Object
+                }
             },
 
-            pose: function
-                (
-                    resourceTitle,
-                    operationName,
-                    resourceName,
-                    languageAndLibraryName,
-                    server,
-                    apiKey,
-                    apiSecret,
-                    accountId,
-                    partnerAccountId,
-                    tokenId,
-                    expiresIn
-                )
+            pose: function()
             {
-                this.$.codePanel.resourceTitle = resourceTitle;
-                this.$.codePanel.operationName = operationName;
-                this.$.codePanel.resourceName = resourceName;
-                this.$.codePanel.languageAndLibraryName = languageAndLibraryName;
-                this.$.codePanel.server = server;
-                this.$.codePanel.apiKey = apiKey;
-                this.$.codePanel.apiSecret = apiSecret;
-                this.$.codePanel.accountId = accountId;
-                this.$.codePanel.partnerAccountId = partnerAccountId;
-                this.$.codePanel.tokenId = tokenId;
-                this.$.codePanel.expiresIn = expiresIn;
-
                 // Override dumb default that disables Escape keyboard equivalent for cancel
                 this.$.dialog.noCancelOnEscKey = false;
 

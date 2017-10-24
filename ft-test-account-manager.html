@@ -467,7 +467,16 @@ An element that allows partner admins to create user accounts for testing. Also 
         <ft-confirmation-dialog id="confirmationDialog"></ft-confirmation-dialog>
 
         <!-- Code window -->
-        <ft-code-window id="codeWindow"></ft-code-window>
+        <ft-code-window
+            id="codeWindow"
+            server="[[server]]"
+            api-key="[[apiKey]]"
+            api-secret="[[apiSecret]]"
+            account-id="[[userAccountId]]"
+            token-id="[[tokenId]]"
+            use-local-data="[[useLocalData]]"
+        >
+        </ft-code-window>
 
     </template>
 
@@ -697,6 +706,13 @@ An element that allows partner admins to create user accounts for testing. Also 
                 _suppressWriteToLocalStorage: {
                     type: Boolean,
                     value: true
+                },
+
+                /** True when doing development on this component. Will load data files locally. */
+                useLocalData: {
+                    type: Object,
+                    notify: true,
+                    value: false
                 }
             },
 
@@ -936,44 +952,30 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             _onViewUserAccountCodeButtonClicked: function(event, detail)
             {
+                this.$.codeWindow.resourceTitle = "User Account";
+                this.$.codeWindow.operationName = "create";
+                this.$.codeWindow.resourceName = "account";
+                this.$.codeWindow.languageAndLibraryName = "python-requests";
                 var partnerAccountId = this._generateGuid();
+                this.$.codeWindow.partnerAccountId = partnerAccountId;
                 var expiresIn = this.timeout.toString();
-                return this.$.codeWindow.pose
-                (
-                    "User Account",
-                    "create",
-                    "account",
-                    "python-requests",
-                    this.server,
-                    this.apiKey,
-                    this.apiSecret,
-                    this.userAccountId,
-                    partnerAccountId,
-                    this.tokenId,
-                    expiresIn
-                ).then(function()
+                this.$.codeWindow.expiresIn = expiresIn;
+                return this.$.codeWindow.pose().then(function()
                     {
                     }.bind(this))
             },
 
             _onViewUserAccessTokenCodeButtonClicked: function(event, detail)
             {
+                this.$.codeWindow.resourceTitle = "User Access Token";
+                this.$.codeWindow.operationName = "create";
+                this.$.codeWindow.resourceName = "token";
+                this.$.codeWindow.languageAndLibraryName = "python-requests";
                 var partnerAccountId = this._generateGuid();
+                this.$.codeWindow.partnerAccountId = partnerAccountId;
                 var expiresIn = this.timeout.toString();
-                return this.$.codeWindow.pose
-                (
-                    "User Access Token",
-                    "create",
-                    "token",
-                    "python-requests",
-                    this.server,
-                    this.apiKey,
-                    this.apiSecret,
-                    this.userAccountId,
-                    partnerAccountId,
-                    this.tokenId,
-                    expiresIn
-                ).then(function()
+                this.$.codeWindow.expiresIn = expiresIn;
+                return this.$.codeWindow.pose().then(function()
                     {
                     }.bind(this))
             },
