@@ -18,7 +18,7 @@ namespace MyNamespace
 
             request.Method = "POST";
 
-            string postData = "{\n \"partnerAccountId\": \"{{PARTNER_ACCOUNT_ID}}\"\n}";
+            string postData = "{ \"partnerAccountId\": \"{{PARTNER_ACCOUNT_ID}}\" }";
             ASCIIEncoding encoding = new ASCIIEncoding();
             byte[] byte1 = encoding.GetBytes(postData);
             request.ContentLength = byte1.Length;
@@ -31,7 +31,6 @@ namespace MyNamespace
                 using (Stream stream = response.GetResponseStream())
                 {
                     return true;
-                    //process the response
                 }
             }
         }

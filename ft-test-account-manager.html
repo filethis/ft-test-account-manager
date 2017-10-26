@@ -427,7 +427,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 position="right"
                 animation-delay="0"
                 offset="5">
-            Server URL is valid and reachable
+            [[_testServerButtonTooltipText]]
         </paper-tooltip>
 
         <!-- API Credentials test tooltip -->
@@ -438,7 +438,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 position="right"
                 animation-delay="0"
                 offset="5">
-            The API credentials are valid.
+            [[_testApiCredentialsButtonTooltipText]]
         </paper-tooltip>
 
         <!-- User Account test tooltip -->
@@ -449,7 +449,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 position="right"
                 animation-delay="0"
                 offset="5">
-            The user account id is valid.
+            [[_testAccountButtonTooltipText]]
         </paper-tooltip>
 
         <!-- User Access Token test tooltip -->
@@ -460,7 +460,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 position="right"
                 animation-delay="0"
                 offset="5">
-            The token is valid.
+            [[_testTokenButtonTooltipText]]
         </paper-tooltip>
 
         <!-- Confirmation dialog -->
@@ -474,7 +474,6 @@ An element that allows partner admins to create user accounts for testing. Also 
             api-secret="[[apiSecret]]"
             account-id="[[userAccountId]]"
             token-id="[[tokenId]]"
-            use-local-data="[[useLocalData]]"
         >
         </ft-code-window>
 
@@ -485,7 +484,10 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             is: 'ft-test-account-manager',
 
-            behaviors: [FileThis.ErrorBehavior, FileThis.HttpBehavior],
+            behaviors: [
+                FileThis.ErrorBehavior,
+                FileThis.HttpBehavior
+            ],
 
             observers:
             [
@@ -707,13 +709,6 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: Boolean,
                     value: true
                 },
-
-                /** True when doing development on this component. Will load data files locally. */
-                useLocalData: {
-                    type: Object,
-                    notify: true,
-                    value: false
-                }
             },
 
 
@@ -1009,45 +1004,45 @@ An element that allows partner admins to create user accounts for testing. Also 
             {
                 var url = this.server + this.apiPath + "/healthcheck";
                 var options = this._buildHttpOptions();
-                this.httpGet(url, options)
-                    .then(function(response)
-                    {
-                        this._showTooltip(this.$.testServerButtonTooltip);
-                    }.bind(this))
-                    .catch(function(error)
-                    {
-                        this.$.confirmationDialog.alert("Cannot reach this server. Are you sure the URL is correct?")
-                    }.bind(this))
+                this._makeTest
+                (
+                    url,
+                    options,
+                    this.$.testServerButtonTooltip,
+                    "_testServerButtonTooltipText",
+                    "Server URL is valid and reachable",
+                    "Invalid Server URL, or not reachable"
+                );
             },
 
             _onTestApiCredentialsButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/partners";
                 var options = this._buildHttpOptions();
-                this.httpGet(url, options)
-                    .then(function(response)
-                    {
-                        this._showTooltip(this.$.testApiCredentialsButtonTooltip);
-                    }.bind(this))
-                    .catch(function(error)
-                    {
-                        this._displayTestError(error);
-                    }.bind(this))
+                this._makeTest
+                (
+                    url,
+                    options,
+                    this.$.testApiCredentialsButtonTooltip,
+                    "_testApiCredentialsButtonTooltipText",
+                    "API credentials are valid",
+                    "Invalid API credentials"
+                );
             },
 
             _onTestAccountButtonClicked: function(event, detail)
             {
                 var url = this.server + this.apiPath + "/accounts/" + this.userAccountId;
                 var options = this._buildHttpOptions();
-                this.httpGet(url, options)
-                    .then(function(response)
-                    {
-                        this._showTooltip(this.$.testAccountButtonTooltip);
-                    }.bind(this))
-                    .catch(function(error)
-                    {
-                        this._displayTestError(error);
-                    }.bind(this))
+                this._makeTest
+                (
+                    url,
+                    options,
+                    this.$.testAccountButtonTooltip,
+                    "_testAccountButtonTooltipText",
+                    "User account is valid",
+                    "Invalid user account"
+                );
             },
 
             _onTestTokenButtonClicked: function(event, detail)
@@ -1058,17 +1053,17 @@ An element that allows partner admins to create user accounts for testing. Also 
                         "X-FileThis-Session": this.token
                     }
                 };
-                this.httpGet(url, options)
-                    .then(function(response)
-                    {
-                        this._showTooltip(this.$.testTokenButtonTooltip);
-                    }.bind(this))
-                    .catch(function(error)
-                    {
-                        this._displayTestError(error);
-                    }.bind(this))
+                this._makeTest
+                (
+                    url,
+                    options,
+                    this.$.testTokenButtonTooltip,
+                    "_testTokenButtonTooltipText",
+                    "Token is valid",
+                    "Invalid token"
+                );
             },
-
+            
             _onCreateAccountButtonClicked: function(event, detail)
             {
                 Promise.resolve()
@@ -1363,45 +1358,57 @@ An element that allows partner admins to create user accounts for testing. Also 
                 return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                     s4() + '-' + s4() + s4() + s4();
             },
-
-            _showTooltip: function(tooltip)
+            
+            _makeTest: function(url, options, tooltip, propertyName, successText, failureText)
             {
+                this.httpGet(url, options)
+                    .then(function(response)
+                    {
+                        this._showTooltip
+                            (
+                                tooltip,
+                                propertyName,
+                                successText,
+                                true // successful
+                            );
+                    }.bind(this))
+                    .catch(function(error)
+                    {
+                        this._showTooltip
+                            (
+                                tooltip,
+                                propertyName,
+                                failureText,
+                                false // failed
+                            );
+                    }.bind(this));
+            },
+            
+            _showTooltip: function(tooltip, propertyName, text, successful)
+            {
+                // Set label
+                this.set(propertyName, text);
+
+                // Set styles
+                var styles = {
+                    '--paper-tooltip-text-color': 'black',
+                    '--paper-tooltip-opacity': '1.0',
+                };
+                var backgroundColor;
+                if (successful)
+                    backgroundColor = '#ebfaeb';
+                else // failed
+                    backgroundColor = '#ffe6e6';
+                styles["--paper-tooltip-background"] = backgroundColor;
+                tooltip.updateStyles(styles);
+
+                // Show tooltip
                 tooltip.show();
                 setTimeout(function()
                 {
                     tooltip.hide();
-                }.bind(this), 2000)
+                }.bind(this), 2000)  // Show for two seconds
             },
-
-            _displayTestError: function(error)
-            {
-                // Handle certain server error responses
-                if (error instanceof FtHttpUnsuccessfulError)
-                {
-                    var status = error.status;
-                    var response = error.response;
-                    var message = response.message;
-
-                    // If the token expired, or is invalid
-                    if (status === 400 &&
-                        message === "User access token expired")
-                    {
-                        this.$.confirmationDialog.alert("User access token is expired or invalid.");
-                        return;
-                    }
-
-                    // If the account could not be found
-                    if (status === 404 &&
-                        message.startsWith("An account with the requested id"))
-                    {
-                        this.$.confirmationDialog.alert("The given user account was not found.");
-                        return;
-                    }
-                }
-
-                // Display a dialog for other kinds of errors, like networking
-                this.handleCaughtError(error);
-            }
 
         });
 

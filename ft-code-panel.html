@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<link rel="import" href="../cbn-copy-clipboard/cbn-copy-clipboard-behavior.html">
-<link rel="import" href="../cbn-copy-clipboard/cbn-copy-clipboard.html">
+<link rel="import" href="../ft-clipboard-behavior/ft-clipboard-behavior.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
 <link rel="import" href="../ft-labeled-icon-button/ft-labeled-icon-button.html">
 <link rel="import" href="../ft-scrolling-behavior/ft-scrolling-behavior.html">
+<link rel="import" href="../ft-url-param-behavior/ft-url-param-behavior.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../juicy-ace-editor/juicy-ace-editor.html">
 <link rel="import" href="../marked-element/marked-element.html">
@@ -54,7 +54,7 @@ An element that provides a configurable alert or confirmation dialog that return
             }
         </style>
 
-        <div class="layout horizontal center">
+        <div id="temp" class="layout horizontal center">
 
             <div style="font-family:'Roboto', sans-serif; font-size:14pt; ">
                 Your Back End Code — [[resourceTitle]]
@@ -103,14 +103,6 @@ An element that provides a configurable alert or confirmation dialog that return
 
             <div class="flex"></div>
 
-            <!-- Include Secrets checkbox -->
-            <paper-checkbox
-                    checked="{{_includeSecrets}}">
-                Include Secrets
-            </paper-checkbox>
-
-            <div style=width:15px;"></div>
-
             <!-- Copy code button -->
             <ft-labeled-icon-button
                 id="copyCodeButton"
@@ -136,13 +128,13 @@ An element that provides a configurable alert or confirmation dialog that return
         >
         </juicy-ace-editor>
 
-        <!-- Clipboard -->
-        <cbn-copy-clipboard id="clipboard">
-        </cbn-copy-clipboard>
+        <div style="height:12px;"></div>
 
-        <!-- Code panel data -->
-        <ft-code-panel-data id="codePanelData">
-        </ft-code-panel-data>
+        <!-- Substitute fixture values checkbox -->
+        <paper-checkbox
+                checked="{{_substituteFixtureValues}}">
+            Substitute fixture values into template (Warning: Contains secrets)
+        </paper-checkbox>
 
     </template>
 
@@ -151,11 +143,16 @@ An element that provides a configurable alert or confirmation dialog that return
 
             is: 'ft-code-panel',
 
-            behaviors: [FileThis.ErrorBehavior, FileThis.HttpBehavior],
+            behaviors: [
+                FileThis.ErrorBehavior,
+                FileThis.HttpBehavior,
+                FileThis.ClipboardBehavior,
+                FileThis.UrlParamBehavior
+            ],
 
             observers:
             [
-                "_onRequestChanged(_operation, resourceName, _languageAndLibrary, _includeSecrets)"
+                "_onRequestChanged(_operation, resourceName, _languageAndLibrary, _substituteFixtureValues)"
             ],
 
             properties: {
@@ -188,9 +185,14 @@ An element that provides a configurable alert or confirmation dialog that return
                     type: String
                 },
 
-                _includeSecrets: {
+                _substituteFixtureValues: {
                     type: Boolean,
                     value: false
+                },
+
+                code: {
+                    type: String,
+                    value: ""
                 },
 
                 // Operation
@@ -253,7 +255,7 @@ An element that provides a configurable alert or confirmation dialog that return
                         {
                             name:'apiblueprint',
                             label:'API Blueprint',
-                            language:'text'
+                            language:'apib'
                         },
 
                         // C#
@@ -380,46 +382,37 @@ An element that provides a configurable alert or confirmation dialog that return
                             language:'sh'
                         }
                     ]
-                },
-
-                /** True when doing development on this component. Will load data files locally. */
-                useLocalData: {
-                    type: Object,
-                    notify: true,
-                    value: false
                 }
             },
 
             ready: function()
             {
-                var thing = this.codePanelData;
+                // Suppress deprecation warning
+                this.$.code.editor.$blockScrolling = Infinity;
             },
 
             _onCopyCodeButtonClicked: function(event, detail)
             {
-                var clipboard = this.$.clipboard;
-                var code = this.$.code.value;
-                clipboard.value = code;
-                clipboard.copy();
+                this.copyTextToClipboard(this.code);
             },
-            
+
             _onOperationNameChanged: function(toName, fromName)
             {
-                if (!toName)
+                if (toName == null)
                     return;
                 this._operation = this._findOperationNamed(toName);
             },
 
             _onLanguageAndLibraryNameChanged: function(toName, fromName)
             {
-                if (!toName)
+                if (toName == null)
                     return;
                 this._languageAndLibrary = this._findLanguageAndLibraryNamed(toName);
             },
 
             _onLanguageAndLibraryChanged: function(toLanguageAndLibrary, fromLanguageAndLibrary)
             {
-                if (!toLanguageAndLibrary)
+                if (toLanguageAndLibrary == null)
                     return;
 
                 // Set the code editor mode
@@ -435,7 +428,7 @@ An element that provides a configurable alert or confirmation dialog that return
                 // Load the code template
 
                 // TODO: This should not be necessary
-                if (!this._languageAndLibrary)
+                if (this._languageAndLibrary == null)
                     return;
 
                 var language = this._languageAndLibrary.language;
@@ -443,7 +436,7 @@ An element that provides a configurable alert or confirmation dialog that return
                 var filename = this.resourceName + "-" + this.operationName + "-" + this.languageAndLibraryName + "." + fileExtension;
 
                 var base;
-                if (this.useLocalData)
+                if (this.getUrlParam("devel"))
                     base = "../bower_components/ft-test-account-manager/data/";
                 else
                     base = "https://filethis.github.io/ft-test-account-manager/components/ft-test-account-manager/data/";
@@ -462,7 +455,7 @@ An element that provides a configurable alert or confirmation dialog that return
                     .then(function(codeTemplate)
                     {
                         var code = this._makeSubstitutionsInto(codeTemplate);
-                        this.$.code.value = code;
+                        this.code = code;
                         var editorInternal = this.$.code.editor;
                         editorInternal.selection.selectFileStart();
                     }.bind(this))
@@ -478,12 +471,12 @@ An element that provides a configurable alert or confirmation dialog that return
 
                 var code = template;
                 code = code.replace(/{{SERVER}}/g, this.server);
-                code = code.replace(/{{ACCOUNT_ID}}/g, this.accountId);
-                code = code.replace(/{{PARTNER_ACCOUNT_ID}}/g, this.partnerAccountId);
-                code = code.replace(/{{TOKEN_ID}}/g, this.tokenId);
-                code = code.replace(/{{EXPIRES_IN}}/g, this.expiresIn);
-                if (this._includeSecrets)
+                if (this._substituteFixtureValues)
                 {
+                    code = code.replace(/{{ACCOUNT_ID}}/g, this.accountId);
+                    code = code.replace(/{{PARTNER_ACCOUNT_ID}}/g, this.partnerAccountId);
+                    code = code.replace(/{{TOKEN_ID}}/g, this.tokenId);
+                    code = code.replace(/{{EXPIRES_IN}}/g, this.expiresIn);
                     var authorizationValue = btoa(this.apiKey + ":" + this.apiSecret);
                     code = code.replace(/{{BASIC}}/g, authorizationValue);
                 }
@@ -522,6 +515,8 @@ An element that provides a configurable alert or confirmation dialog that return
                 {
                     case "text":
                         return "txt";
+                    case "apib":
+                        return "apib";
                     case "csharp":
                         return "cs";
                     case "sh":

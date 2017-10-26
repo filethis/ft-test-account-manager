@@ -24,3 +24,6 @@ var request = http.request(options, function(response) {
         console.log(body.toString());
     });
 });
+
+req.write("{ \"partnerAccountId\": \"{{PARTNER_ACCOUNT_ID}}\" }");
+req.end();

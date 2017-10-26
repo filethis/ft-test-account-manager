@@ -3,5 +3,5 @@ var request = new RestRequest(Method.POST);
 request.AddHeader("cache-control", "no-cache");
 request.AddHeader("authorization", "Basic {{BASIC}}");
 request.AddHeader("content-type", "text/plain; charset=utf-8");
-request.AddParameter("text/plain; charset=utf-8", "{\n  \"expiresIn\": {{EXPIRES_IN}}\n}\n", ParameterType.RequestBody);
+request.AddParameter("text/plain; charset=utf-8", "{ \"expiresIn\": {{EXPIRES_IN}} }", ParameterType.RequestBody);
 IRestResponse response = client.Execute(request);

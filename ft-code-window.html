@@ -51,7 +51,7 @@ An element that provides a configurable alert or confirmation dialog that return
         <paper-dialog
                 modal id="dialog"
                 class="layout vertical"
-                style="width:765px; height:700px; ">
+                style="width:765px; height:710px; ">
 
             <ft-code-panel
                 id="codePanel"
@@ -67,7 +67,6 @@ An element that provides a configurable alert or confirmation dialog that return
                 partner-account-id="[[partnerAccountId]]"
                 token-id="[[tokenId]]"
                 expires-in="[[expiresIn]]"
-                use-local-data="[[useLocalData]]"
             >
             </ft-code-panel>
 
@@ -135,10 +134,6 @@ An element that provides a configurable alert or confirmation dialog that return
 
                 expiresIn: {
                     type: String
-                },
-
-                useLocalData: {
-                    type: Object
                 }
             },
 

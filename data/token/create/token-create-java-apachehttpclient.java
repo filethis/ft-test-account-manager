@@ -20,6 +20,9 @@ public class TestClass
         HttpPost request = new HttpPost("{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens");
         request.add("Authorization", "Basic {{BASIC}}");
         request.add("Content-Type", "text/plain; charset=utf-8");
+        String body = "{ \"expiresIn\": {{EXPIRES_IN}} }";
+        StringEntity bodyEntity = new StringEntity(body, "UTF-8");
+        request.setEntity(bodyEntity);
 
         // Send request
         HttpResponse response = HttpClientBuilder.create().build().execute(request);

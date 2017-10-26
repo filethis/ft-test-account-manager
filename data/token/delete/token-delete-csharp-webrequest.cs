@@ -22,7 +22,6 @@ namespace MyNamespace
                 using (Stream stream = response.GetResponseStream())
                 {
                     return true;
-                    //process the response
                 }
             }
         }
