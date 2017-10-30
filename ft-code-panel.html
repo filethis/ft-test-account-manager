@@ -478,7 +478,7 @@ An element that provides a configurable alert or confirmation dialog that return
                     code = code.replace(/{{TOKEN_ID}}/g, this.tokenId);
                     code = code.replace(/{{EXPIRES_IN}}/g, this.expiresIn);
                     var authorizationValue = btoa(this.apiKey + ":" + this.apiSecret);
-                    code = code.replace(/{{BASIC}}/g, authorizationValue);
+                    code = code.replace(/{{API_CREDENTIALS}}/g, authorizationValue);
                 }
                 return code;
             },

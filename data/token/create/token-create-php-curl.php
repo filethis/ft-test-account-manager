@@ -12,7 +12,7 @@ curl_setopt_array($curl, array(
     CURLOPT_CUSTOMREQUEST => "POST",
     CURLOPT_POSTFIELDS => "{ \"expiresIn\": {{EXPIRES_IN}} }",
     CURLOPT_HTTPHEADER => array(
-        "authorization: Basic {{BASIC}}",
+        "authorization: Basic {{API_CREDENTIALS}}",
         "cache-control: no-cache",
         "content-type: text/plain; charset=utf-8"
     ),

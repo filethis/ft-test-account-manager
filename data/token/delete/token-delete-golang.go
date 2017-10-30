@@ -16,7 +16,7 @@ func sendDeleteToken() {
     request, error := http.NewRequest("DELETE", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}", nil)
 
     // Headers
-    request.Header.Add("Authorization", "Basic {{BASIC}}")
+    request.Header.Add("Authorization", "Basic {{API_CREDENTIALS}}")
 
     // Fetch Request
     response, error := client.Do(request)

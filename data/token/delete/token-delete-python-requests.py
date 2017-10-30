@@ -5,7 +5,7 @@ def send_request():
         response = requests.delete(
             url="{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}",
             headers={
-                "Authorization": "Basic {{BASIC}}",
+                "Authorization": "Basic {{API_CREDENTIALS}}",
             },
         )
         print('Response HTTP Status Code: {status_code}'.format(

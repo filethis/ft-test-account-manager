@@ -19,7 +19,7 @@ func sendCreateToken() {
     request, error := http.NewRequest("POST", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens", body)
 
     // Headers
-    request.Header.Add("Authorization", "Basic {{BASIC}}")
+    request.Header.Add("Authorization", "Basic {{API_CREDENTIALS}}")
     request.Header.Add("Content-Type", "text/plain; charset=utf-8")
 
     // Fetch Request

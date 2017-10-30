@@ -6,7 +6,7 @@ $request->setMethod(HTTP_METH_POST);
 
 $request->setHeaders(array(
     'cache-control' => 'no-cache',
-    'authorization' => 'Basic {{BASIC}}',
+    'authorization' => 'Basic {{API_CREDENTIALS}}',
     'content-type' => 'text/plain; charset=utf-8'
 ));
 

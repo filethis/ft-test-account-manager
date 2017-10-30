@@ -14,7 +14,7 @@ def send_request
   request = Net::HTTP::Post.new(uri)
 
   # Add headers
-  request.add_field "Authorization", "Basic {{BASIC}}"
+  request.add_field "Authorization", "Basic {{API_CREDENTIALS}}"
 
   # Add headers
   request.add_field "Content-Type", "text/plain; charset=utf-8"

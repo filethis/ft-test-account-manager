@@ -3,7 +3,7 @@ import http.client
 conn = http.client.HTTPSConnection("{{SERVER}}")
 
 headers = {
-    'authorization': "Basic {{BASIC}}",
+    'authorization': "Basic {{API_CREDENTIALS}}",
     'cache-control': "no-cache"
     }
 

@@ -6,7 +6,7 @@ $request->setMethod(HTTP_METH_DELETE);
 
 $request->setHeaders(array(
     'cache-control' => 'no-cache',
-    'authorization' => 'Basic {{BASIC}}'
+    'authorization' => 'Basic {{API_CREDENTIALS}}'
 ));
 
 try {

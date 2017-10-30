@@ -2,7 +2,7 @@ jQuery.ajax({
     url: "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}",
     type: "DELETE",
     headers: {
-        "Authorization": "Basic {{BASIC}}"
+        "Authorization": "Basic {{API_CREDENTIALS}}"
     }
 })
 .done(function(data, textStatus, jqXHR) {

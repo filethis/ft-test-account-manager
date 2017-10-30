@@ -4,7 +4,7 @@ var request = unirest("DELETE", "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}");
 
 request.headers({
     "cache-control": "no-cache",
-    "authorization": "Basic {{BASIC}}"
+    "authorization": "Basic {{API_CREDENTIALS}}"
 });
 
 request.end(function(response) {

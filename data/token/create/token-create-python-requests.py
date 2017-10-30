@@ -5,7 +5,7 @@ def send_request():
         response = requests.post(
             url="{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens",
             headers={
-                "Authorization": "Basic {{BASIC}}",
+                "Authorization": "Basic {{API_CREDENTIALS}}",
                 "Content-Type": "text/plain; charset=utf-8",
             },
             data="{ \"expiresIn\": {{EXPIRES_IN}} }"

@@ -14,7 +14,7 @@ namespace MyNamespace
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
             request.ContentType = "text/plain; charset=utf-8";
-            request.Headers.Add("Authorization", "Basic {{BASIC}}");
+            request.Headers.Add("Authorization", "Basic {{API_CREDENTIALS}}");
 
             request.Method = "POST";
 

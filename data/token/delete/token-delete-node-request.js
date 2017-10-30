@@ -5,7 +5,7 @@ var options = {
     url: '{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}}',
     headers: {
         'cache-control': 'no-cache',
-        authorization: 'Basic {{BASIC}}'
+        authorization: 'Basic {{API_CREDENTIALS}}'
     }
 };
 

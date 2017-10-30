@@ -7,7 +7,7 @@ var options = {
     "path": "/api/v1/accounts",
     "headers": {
         "content-type": "text/plain; charset=utf-8",
-        "authorization": "Basic {{BASIC}}",
+        "authorization": "Basic {{API_CREDENTIALS}}",
         "cache-control": "no-cache"
     }
 };

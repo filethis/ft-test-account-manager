@@ -1,4 +1,4 @@
 DELETE /api/v1/accounts/{{ACCOUNT_ID}}/tokens/{{TOKEN_ID}} HTTP/1.1
 Host: {{SERVER}}
-Authorization: Basic {{BASIC}}
+Authorization: Basic {{API_CREDENTIALS}}
 Cache-Control: no-cache

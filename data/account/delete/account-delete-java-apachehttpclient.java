@@ -18,7 +18,7 @@ public class TestClass
     {
         // Build request
         HttpDelete request = new HttpDelete("{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}");
-        request.add("Authorization", "Basic {{BASIC}}");
+        request.add("Authorization", "Basic {{API_CREDENTIALS}}");
 
         // Send request
         HttpResponse response = HttpClientBuilder.create().build().execute(request);

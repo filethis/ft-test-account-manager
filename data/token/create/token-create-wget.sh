@@ -2,7 +2,7 @@
 wget --quiet \
     --method POST \
     --header 'content-type: text/plain; charset=utf-8' \
-    --header 'authorization: Basic {{BASIC}}' \
+    --header 'authorization: Basic {{API_CREDENTIALS}}' \
     --header 'cache-control: no-cache' \
     --body-data '{ "expiresIn": {{EXPIRES_IN}} }' \
     --output-document \

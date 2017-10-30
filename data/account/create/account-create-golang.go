@@ -19,7 +19,7 @@ func sendCreateAccount() {
     request, error := http.NewRequest("POST", "{{SERVER}}/api/v1/accounts", body)
 
     // Headers
-    request.Header.Add("Authorization", "Basic {{BASIC}}")
+    request.Header.Add("Authorization", "Basic {{API_CREDENTIALS}}")
     request.Header.Add("Content-Type", "text/plain; charset=utf-8")
 
     // Fetch Request

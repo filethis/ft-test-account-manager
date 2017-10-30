@@ -6,7 +6,7 @@ Request request = new Request.Builder()
     .url("{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}/tokens")
     .post(body)
     .addHeader("content-type", "text/plain; charset=utf-8")
-    .addHeader("authorization", "Basic {{BASIC}}")
+    .addHeader("authorization", "Basic {{API_CREDENTIALS}}")
     .addHeader("cache-control", "no-cache")
     .build();
 

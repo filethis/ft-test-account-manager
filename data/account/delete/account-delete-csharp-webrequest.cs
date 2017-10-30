@@ -13,7 +13,7 @@ namespace MyNamespace
             string url = "{{SERVER}}/api/v1/accounts/{{ACCOUNT_ID}}";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
-            request.Headers.Add("Authorization", "Basic {{BASIC}}");
+            request.Headers.Add("Authorization", "Basic {{API_CREDENTIALS}}");
 
             request.Method = "DELETE";
 

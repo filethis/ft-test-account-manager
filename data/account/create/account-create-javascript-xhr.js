@@ -10,7 +10,7 @@ xhr.addEventListener("readystatechange", function() {
 
 xhr.open("POST", "{{SERVER}}/api/v1/accounts");
 xhr.setRequestHeader("content-type", "text/plain; charset=utf-8");
-xhr.setRequestHeader("authorization", "Basic {{BASIC}}");
+xhr.setRequestHeader("authorization", "Basic {{API_CREDENTIALS}}");
 xhr.setRequestHeader("cache-control", "no-cache");
 
 xhr.send(data);

@@ -11,7 +11,7 @@ curl_setopt_array($curl, array(
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => "DELETE",
     CURLOPT_HTTPHEADER => array(
-        "authorization: Basic {{BASIC}}",
+        "authorization: Basic {{API_CREDENTIALS}}",
         "cache-control: no-cache"
     ),
 ));

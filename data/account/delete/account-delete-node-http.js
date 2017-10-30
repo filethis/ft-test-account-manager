@@ -6,7 +6,7 @@ var options = {
     "port": null,
     "path": "/api/v1/accounts/{{ACCOUNT_ID}}",
     "headers": {
-        "authorization": "Basic {{BASIC}}",
+        "authorization": "Basic {{API_CREDENTIALS}}",
         "cache-control": "no-cache"
     }
 };

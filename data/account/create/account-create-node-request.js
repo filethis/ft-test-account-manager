@@ -5,7 +5,7 @@ var options = {
     url: '{{SERVER}}/api/v1/accounts',
     headers: {
         'cache-control': 'no-cache',
-        authorization: 'Basic {{BASIC}}',
+        authorization: 'Basic {{API_CREDENTIALS}}',
         'content-type': 'text/plain; charset=utf-8'
     },
     body: '{ "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}" }'

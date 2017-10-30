@@ -13,7 +13,7 @@ def send_request
   request = Net::HTTP::Delete.new(uri)
 
   # Add headers
-  request.add_field "Authorization", "Basic {{BASIC}}"
+  request.add_field "Authorization", "Basic {{API_CREDENTIALS}}"
 
   # Fetch Request
   response = http.request(request)

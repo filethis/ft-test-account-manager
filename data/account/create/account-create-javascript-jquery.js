@@ -2,7 +2,7 @@ jQuery.ajax({
     url: "{{SERVER}}/api/v1/accounts",
     type: "POST",
     headers: {
-        "Authorization": "Basic {{BASIC}}",
+        "Authorization": "Basic {{API_CREDENTIALS}}",
         "Content-Type": "text/plain; charset=utf-8"
     },
     processData: false,
