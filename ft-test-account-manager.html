@@ -51,7 +51,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 display:block;
                 overflow:hidden;
                 width:400px;
-                padding-top:15px;
+                padding-top:10px;
                 padding-bottom:5px;
                 @apply --layout-vertical;
 
@@ -68,16 +68,11 @@ An element that allows partner admins to create user accounts for testing. Also 
             }
             .section-divider
             {
+                width:100%;
+                margin-bottom:10px;
                 height:10px;
+                border-bottom:1px solid #DDD;
             }
-            /*.section-divider*/
-            /*{*/
-                /*width:100%;*/
-                /*height:1px;*/
-                /*min-height: 1px;*/
-                /*clear:both;*/
-                /*border-bottom:1px solid #DDD;*/
-            /*}*/
             .field-to-buttons-space
             {
                 width:30px;
@@ -90,9 +85,9 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- Server panel -->
         <ft-form-panel
-                title="FileThis Server"
-                class="form-panel"
-                content-shown="false"
+            title="FileThis Server"
+            class="form-panel"
+            content-shown="false"
         >
 
             <!-- Summary -->
@@ -105,63 +100,70 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             <!-- Test Server button -->
             <ft-labeled-icon-button
-                    id="testServerButton"
-                    slot="controls"
-                    icon="check"
-                    label="Test"
-                    disabled="[[!_canTestServer]]"
-                    on-tap="_onTestServerButtonClicked">
+                id="testServerButton"
+                slot="controls"
+                icon="check"
+                label="Test"
+                disabled="[[!_canTestServer]]"
+                on-tap="_onTestServerButtonClicked"
+            >
             </ft-labeled-icon-button>
 
             <!-- Content -->
             <div
-                    slot="content"
-                    class="layout horizontal center"
-                    hidden$="[[!showServer]]">
+                slot="content"
+                class="layout horizontal center"
+            >
 
                 <!-- Server -->
                 <validator-js-validator name="isURL"></validator-js-validator>
+                <!-- For some reason, the validation field height does not propagate upward in layouts, so we add space for it. -->
                 <paper-input
-                        id="serverField"
-                        class="flex"
-                        value="{{server}}"
-                        label="URL"
-                        auto-validate
-                        validator="isURL"
-                        error-message="Must be a valid URL"
-                        invalid="{{_serverInvalid}}">
+                    id="serverField"
+                    class="flex"
+                    style="height:70px; "
+                    value="{{server}}"
+                    label="URL"
+                    auto-validate
+                    validator="isURL"
+                    error-message="Must be a valid URL"
+                    invalid="{{_serverInvalid}}"
+                >
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Default button -->
                 <ft-labeled-icon-button
-                        id="defaultServerButton"
-                        icon="undo"
-                        label="Default"
-                        disabled="[[!_canSetDefaultServer]]"
-                        on-tap="_onDefaultServerButtonClicked">
+                    id="defaultServerButton"
+                    icon="undo"
+                    label="Default"
+                    disabled="[[!_canSetDefaultServer]]"
+                    on-tap="_onDefaultServerButtonClicked"
+                >
                 </ft-labeled-icon-button>
 
             </div>
         </ft-form-panel>
 
         <!-- Divider -->
-        <div class="section-divider" hidden$="[[!showServer]]"></div>
+        <div class="section-divider"></div>
 
         <!-- API Credentials -->
         <ft-form-panel
-                title="API Credentials"
-                class="form-panel">
+            title="API Credentials"
+            class="form-panel"
+        >
 
             <!-- Test API credentials button -->
             <ft-labeled-icon-button
-                    id="testApiCredentialsButton"
-                    slot="controls"
-                    icon="check"
-                    label="Test"
-                    disabled="[[!_canTestApiCredentials]]"
-                    on-tap="_onTestApiCredentialsButtonClicked">
+                id="testApiCredentialsButton"
+                slot="controls"
+                icon="check"
+                label="Test"
+                disabled="[[!_canTestApiCredentials]]"
+                on-tap="_onTestApiCredentialsButtonClicked"
+            >
             </ft-labeled-icon-button>
 
             <!-- Content -->
@@ -176,17 +178,18 @@ An element that allows partner admins to create user accounts for testing. Also 
 
                     <!-- API Key -->
                     <paper-input
-                            id="apiKeyField"
-                            autofocus
-                            class="flex"
-                            label="API Key"
-                            value="{{apiKey}}"
-                            type="[[_computeInputType(_showSecrets)]]"
-                            auto-validate
-                            validator="isAlphanumeric"
-                            error-message="Must be an alphanumeric string"
-                            invalid="{{_apiKeyInvalid}}"
-                            char-counter>
+                        id="apiKeyField"
+                        autofocus
+                        class="flex"
+                        label="API Key"
+                        value="{{apiKey}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        auto-validate
+                        validator="isAlphanumeric"
+                        error-message="Must be an alphanumeric string"
+                        invalid="{{_apiKeyInvalid}}"
+                        char-counter
+                    >
                     </paper-input>
 
                 </div>
@@ -196,17 +199,17 @@ An element that allows partner admins to create user accounts for testing. Also 
 
                     <!-- API Secret -->
                     <paper-input
-                            id="apiSecretField"
-                            autofocus
-                            label="API Secret"
-                            class="flex"
-                            value="{{apiSecret}}"
-                            type="[[_computeInputType(_showSecrets)]]"
-                            auto-validate
-                            validator="isAlphanumeric"
-                            error-message="Must be an alphanumeric string"
-                            invalid="{{_apiSecretInvalid}}"
-                            char-counter>
+                        id="apiSecretField"
+                        autofocus
+                        label="API Secret"
+                        class="flex"
+                        value="{{apiSecret}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        auto-validate
+                        validator="isAlphanumeric"
+                        error-message="Must be an alphanumeric string"
+                        invalid="{{_apiSecretInvalid}}"
+                        char-counter>
                     </paper-input>
 
                 </div>
@@ -231,60 +234,68 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             <!-- Test Account button -->
             <ft-labeled-icon-button
-                    id="testAccountButton"
-                    slot="controls"
-                    icon="check"
-                    label="Test"
-                    disabled="[[!_canTestUserAccount]]"
-                    on-tap="_onTestAccountButtonClicked">
+                id="testAccountButton"
+                slot="controls"
+                icon="check"
+                label="Test"
+                disabled="[[!_canTestUserAccount]]"
+                on-tap="_onTestAccountButtonClicked"
+            >
             </ft-labeled-icon-button>
 
             <!-- Content -->
             <div
-                    slot="content"
-                    class="layout horizontal center">
+                slot="content"
+                class="layout horizontal center"
+            >
 
                 <!-- User acccount id -->
+                <!-- For some reason, the validation field height does not propagate upward in layouts, so we add space for it. -->
                 <paper-input
-                        id="userAccountIdField"
-                        label="Id"
-                        class="flex"
-                        value="{{userAccountId}}"
-                        auto-validate
-                        pattern="[0-9]+"
-                        error-message="Not a valid FileThis acccount id">
+                    id="userAccountIdField"
+                    label="Id"
+                    class="flex"
+                    style="height:70px; "
+                    value="{{userAccountId}}"
+                    auto-validate
+                    pattern="[0-9]+"
+                    error-message="Not a valid FileThis acccount id"
+                >
                 </paper-input>
 
                 <div class="field-to-buttons-space"></div>
 
                 <!-- Code button -->
                 <ft-labeled-icon-button
-                        id="viewUserAccountCodeButton"
-                        icon="code"
-                        label="Code"
-                        on-tap="_onViewUserAccountCodeButtonClicked">
+                    id="viewUserAccountCodeButton"
+                    icon="code"
+                    label="Code"
+                    on-tap="_onViewUserAccountCodeButtonClicked"
+                >
                 </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Delete Account button -->
                 <ft-labeled-icon-button
-                        id="deleteAccountButton"
-                        icon="remove"
-                        label="Delete"
-                        disabled="[[!_canDeleteUserAccount]]"
-                        on-tap="_onDeleteAccountButtonClicked">
+                    id="deleteAccountButton"
+                    icon="remove"
+                    label="Delete"
+                    disabled="[[!_canDeleteUserAccount]]"
+                    on-tap="_onDeleteAccountButtonClicked"
+                >
                 </ft-labeled-icon-button>
 
                 <div class="inter-button-space"></div>
 
                 <!-- Create Account button -->
                 <ft-labeled-icon-button
-                        id="createAccountButton"
-                        icon="add"
-                        label="New"
-                        disabled="[[!_canCreateUserAccount]]"
-                        on-tap="_onCreateAccountButtonClicked">
+                    id="createAccountButton"
+                    icon="add"
+                    label="New"
+                    disabled="[[!_canCreateUserAccount]]"
+                    on-tap="_onCreateAccountButtonClicked"
+                >
                 </ft-labeled-icon-button>
             </div>
         </ft-form-panel>
@@ -294,34 +305,38 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- User Access Token -->
         <ft-form-panel
-                title="User Access Token"
-                class="form-panel">
+            title="User Access Token"
+            class="form-panel"
+        >
 
             <!-- Test Token button -->
             <ft-labeled-icon-button
-                    id="testTokenButton"
-                    icon="check"
-                    slot="controls"
-                    label="Test"
-                    disabled="[[!_canTestToken]]"
-                    on-tap="_onTestTokenButtonClicked">
+                id="testTokenButton"
+                icon="check"
+                slot="controls"
+                label="Test"
+                disabled="[[!_canTestToken]]"
+                on-tap="_onTestTokenButtonClicked"
+            >
             </ft-labeled-icon-button>
 
             <!-- Content -->
             <div
-                    slot="content"
-                    class="layout vertical">
+                slot="content"
+                class="layout vertical"
+            >
 
                 <!-- timeout -->
                 <paper-input
-                        id="timeoutField"
-                        label="Timeout in Minutes"
-                        value="{{timeout}}"
-                        auto-validate
-                        pattern="[0-9]+"
-                        error-message="Must be an integer"
-                        invalid="{{_timeoutInvalid}}"
-                        style="width:110px;">
+                    id="timeoutField"
+                    label="Timeout in Minutes"
+                    value="{{timeout}}"
+                    auto-validate
+                    pattern="[0-9]+"
+                    error-message="Must be an integer"
+                    invalid="{{_timeoutInvalid}}"
+                    style="width:110px;"
+                >
                 </paper-input>
 
                 <div class="layout horizontal center">
@@ -329,48 +344,52 @@ An element that allows partner admins to create user accounts for testing. Also 
                     <!-- token -->
                     <validator-js-validator name="isAscii"></validator-js-validator>
                     <paper-input
-                            id="tokenField"
-                            class="flex"
-                            label="Token"
-                            value="{{token}}"
-                            type="[[_computeInputType(_showSecrets)]]"
-                            char-counter
-                            auto-validate
-                            validator="isAscii"
-                            error-message="Must be valid token string"
-                            invalid="{{_tokenInvalid}}">
+                        id="tokenField"
+                        class="flex"
+                        label="Token"
+                        value="{{token}}"
+                        type="[[_computeInputType(_showSecrets)]]"
+                        char-counter
+                        auto-validate
+                        validator="isAscii"
+                        error-message="Must be valid token string"
+                        invalid="{{_tokenInvalid}}"
+                    >
                     </paper-input>
 
                     <div class="field-to-buttons-space"></div>
 
                     <!-- Code button -->
                     <ft-labeled-icon-button
-                            id="viewUserAccessTokenCodeButton"
-                            icon="code"
-                            label="Code"
-                            on-tap="_onViewUserAccessTokenCodeButtonClicked">
+                        id="viewUserAccessTokenCodeButton"
+                        icon="code"
+                        label="Code"
+                        on-tap="_onViewUserAccessTokenCodeButtonClicked"
+                    >
                     </ft-labeled-icon-button>
 
                     <div class="inter-button-space"></div>
 
                     <!-- Delete Token button -->
                     <ft-labeled-icon-button
-                            id="deleteTokenButton"
-                            icon="remove"
-                            label="Delete"
-                            disabled="[[!_canDeleteToken]]"
-                            on-tap="_onDeleteTokenButtonClicked">
+                        id="deleteTokenButton"
+                        icon="remove"
+                        label="Delete"
+                        disabled="[[!_canDeleteToken]]"
+                        on-tap="_onDeleteTokenButtonClicked"
+                    >
                     </ft-labeled-icon-button>
 
                     <div class="inter-button-space"></div>
 
                     <!-- Create Token button -->
                     <ft-labeled-icon-button
-                            id="createTokenButton"
-                            icon="add"
-                            label="New"
-                            disabled="[[!_canCreateToken]]"
-                            on-tap="_onCreateTokenButtonClicked">
+                        id="createTokenButton"
+                        icon="add"
+                        label="New"
+                        disabled="[[!_canCreateToken]]"
+                        on-tap="_onCreateTokenButtonClicked"
+                    >
                     </ft-labeled-icon-button>
                 </div>
             </div>
@@ -381,9 +400,9 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- Secrets -->
         <ft-form-panel
-                title="Secrets"
-                class="form-panel"
-                content-shown="false"
+            title="Secrets"
+            class="form-panel"
+            content-shown="false"
         >
 
             <!-- Summary -->
@@ -396,13 +415,12 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             <!-- Content -->
             <div
-                    slot="content"
-                    class="layout horizontal center"
-                    hidden$="[[!showServer]]">
+                slot="content"
+                class="layout horizontal center"
+            >
 
                 <!-- Show Secrets checkbox -->
-                <paper-checkbox
-                        checked="{{_showSecrets}}">
+                <paper-checkbox checked="{{_showSecrets}}">
                     Show
                 </paper-checkbox>
 
@@ -410,56 +428,61 @@ An element that allows partner admins to create user accounts for testing. Also 
 
                 <!-- Clear Stored Secrets button -->
                 <ft-labeled-icon-button
-                        id="clearSecretsButton"
-                        icon="clear"
-                        label="Clear"
-                        disabled="[[!_canClearSecrets]]"
-                        on-tap="_onClearSecretsButtonClicked">
+                    id="clearSecretsButton"
+                    icon="clear"
+                    label="Clear"
+                    disabled="[[!_canClearSecrets]]"
+                    on-tap="_onClearSecretsButtonClicked"
+                >
                 </ft-labeled-icon-button>
             </div>
         </ft-form-panel>
 
         <!-- Server test tooltip -->
         <paper-tooltip
-                id="testServerButtonTooltip"
-                manual-mode="true"
-                for="testServerButton"
-                position="right"
-                animation-delay="0"
-                offset="5">
+            id="testServerButtonTooltip"
+            manual-mode="true"
+            for="testServerButton"
+            position="right"
+            animation-delay="0"
+            offset="5"
+        >
             [[_testServerButtonTooltipText]]
         </paper-tooltip>
 
         <!-- API Credentials test tooltip -->
         <paper-tooltip
-                id="testApiCredentialsButtonTooltip"
-                manual-mode="true"
-                for="testApiCredentialsButton"
-                position="right"
-                animation-delay="0"
-                offset="5">
+            id="testApiCredentialsButtonTooltip"
+            manual-mode="true"
+            for="testApiCredentialsButton"
+            position="right"
+            animation-delay="0"
+            offset="5"
+        >
             [[_testApiCredentialsButtonTooltipText]]
         </paper-tooltip>
 
         <!-- User Account test tooltip -->
         <paper-tooltip
-                id="testAccountButtonTooltip"
-                manual-mode="true"
-                for="testAccountButton"
-                position="right"
-                animation-delay="0"
-                offset="5">
+            id="testAccountButtonTooltip"
+            manual-mode="true"
+            for="testAccountButton"
+            position="right"
+            animation-delay="0"
+            offset="5"
+        >
             [[_testAccountButtonTooltipText]]
         </paper-tooltip>
 
         <!-- User Access Token test tooltip -->
         <paper-tooltip
-                id="testTokenButtonTooltip"
-                manual-mode="true"
-                for="testTokenButton"
-                position="right"
-                animation-delay="0"
-                offset="5">
+            id="testTokenButtonTooltip"
+            manual-mode="true"
+            for="testTokenButton"
+            position="right"
+            animation-delay="0"
+            offset="5"
+        >
             [[_testTokenButtonTooltipText]]
         </paper-tooltip>
 
@@ -575,19 +598,6 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: String,
                     notify: true,
                     value: ""
-                },
-
-                /**
-                 * Whether to display the server URL field. Used by FileThis for testing against non-production servers.
-                 *
-                 * Note that you can provide the strings "true" and "false" as attribute values.
-                 *
-                 * @type {boolean}
-                 */
-                showServer: {
-                    type: Object,
-                    notify: true,
-                    value: false
                 },
 
                 /** The default server URL. Used by FileThis for testing against non-production servers. */
