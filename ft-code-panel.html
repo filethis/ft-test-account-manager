@@ -57,7 +57,7 @@ An element that provides a configurable alert or confirmation dialog that return
         <div id="temp" class="layout horizontal center">
 
             <div style="font-family:'Roboto', sans-serif; font-size:14pt; ">
-                Your Back End Code — [[resourceTitle]]
+                Your Back End Code — [[resourceHeading]]
             </div>
         </div>
 
@@ -152,7 +152,9 @@ An element that provides a configurable alert or confirmation dialog that return
 
             observers:
             [
-                "_onRequestChanged(_operation, resourceName, _languageAndLibrary, _substituteFixtureValues)"
+                "_onOperationsInitialized(operationName, _operations)",
+                "_onLanguageAndLibraryInitialized(_onLanguageAndLibraryNameChanged, _languageAndLibraries)",
+                "_onRequestChanged(_operation, resourceName, _languageAndLibrary, _substituteFixtureValues)",
             ],
 
             properties: {
@@ -195,6 +197,18 @@ An element that provides a configurable alert or confirmation dialog that return
                     value: ""
                 },
 
+
+                // Resource
+
+                resourceName: {
+                    type: String
+                },
+
+                resourceHeading: {
+                    type: String
+                },
+
+
                 // Operation
 
                 operationName: {
@@ -223,24 +237,13 @@ An element that provides a configurable alert or confirmation dialog that return
                 },
 
 
-                // Resource
-
-                resourceName: {
-                    type: String
-                },
-
-                resourceTitle: {
-                    type: String
-                },
-
-
                 // Language and Library
 
                 languageAndLibraryName: {
                     type: String,
                     observer: "_onLanguageAndLibraryNameChanged"
                 },
-                
+
                 _languageAndLibrary: {
                     type: Object,
                     observer: "_onLanguageAndLibraryChanged"
@@ -388,31 +391,52 @@ An element that provides a configurable alert or confirmation dialog that return
             ready: function()
             {
                 // Suppress deprecation warning
-                this.$.code.editor.$blockScrolling = Infinity;
+                // this.$.code.editor.$blockScrolling = Infinity;
             },
 
-            _onCopyCodeButtonClicked: function(event, detail)
+
+            // Operation
+
+            _onOperationsInitialized: function(to)
             {
-                this.copyTextToClipboard(this.code);
+                this._handleOperationNameChanged();
             },
 
-            _onOperationNameChanged: function(toName, fromName)
+            _onOperationNameChanged: function(to, from)
             {
-                if (toName == null)
+                if (!this.operationName || !this._operations)
                     return;
-                this._operation = this._findOperationNamed(toName);
+                this._handleOperationNameChanged();
             },
 
-            _onLanguageAndLibraryNameChanged: function(toName, fromName)
+            _handleOperationNameChanged: function()
             {
-                if (toName == null)
+                this._operation = this._findOperationNamed(this.operationName);
+            },
+
+
+            // Language and library
+
+            _onLanguageAndLibraryInitialized: function(to)
+            {
+                this._handleLanguageAndLibraryNameChanged();
+            },
+
+            _onLanguageAndLibraryNameChanged: function(to, from)
+            {
+                if (!this.languageAndLibraryName || !this._languageAndLibraries)
                     return;
-                this._languageAndLibrary = this._findLanguageAndLibraryNamed(toName);
+                this._handleLanguageAndLibraryNameChanged();
+            },
+
+            _handleLanguageAndLibraryNameChanged: function()
+            {
+                this._languageAndLibrary = this._findLanguageAndLibraryNamed(this.languageAndLibraryName);
             },
 
             _onLanguageAndLibraryChanged: function(toLanguageAndLibrary, fromLanguageAndLibrary)
             {
-                if (toLanguageAndLibrary == null)
+                if (!toLanguageAndLibrary)
                     return;
 
                 // Set the code editor mode
@@ -423,12 +447,15 @@ An element that provides a configurable alert or confirmation dialog that return
                 session.setMode(mode);
             },
 
-            _onRequestChanged: function()
+
+            // Request
+
+            _onRequestChanged: function(to)
             {
                 // Load the code template
 
                 // TODO: This should not be necessary
-                if (this._languageAndLibrary == null)
+                if (!this._languageAndLibrary)
                     return;
 
                 var language = this._languageAndLibrary.language;
@@ -463,6 +490,11 @@ An element that provides a configurable alert or confirmation dialog that return
                     {
                         log.error("Could not load local code template file: " + url);
                     }.bind(this));
+            },
+
+            _onCopyCodeButtonClicked: function(event, detail)
+            {
+                this.copyTextToClipboard(this.code);
             },
 
             _makeSubstitutionsInto: function(template)

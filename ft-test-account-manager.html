@@ -15,6 +15,7 @@ limitations under the License.
 -->
 
 
+<link rel="import" href="../app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
@@ -27,7 +28,8 @@ limitations under the License.
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="ft-form-panel.html">
+<link rel="import" href="../polymer/lib/utils/debounce.html">
+<link rel="import" href="../ft-form-panel/ft-form-panel.html">
 <link rel="import" href="ft-code-window.html">
 <link rel="import" href="validator-js-validator.html">
 
@@ -83,11 +85,22 @@ An element that allows partner admins to create user accounts for testing. Also 
             }
         </style>
 
+        <app-localstorage-document key="serverPanelOpen" data="{{_serverPanelOpen}}">
+        </app-localstorage-document>
+        <app-localstorage-document key="apiCredentialsPanelOpen" data="{{_apiCredentialsPanelOpen}}">
+        </app-localstorage-document>
+        <app-localstorage-document key="userAccountPanelOpen" data="{{_userAccountPanelOpen}}">
+        </app-localstorage-document>
+        <app-localstorage-document key="userAccessTokenPanelOpen" data="{{_userAccessTokenPanelOpen}}">
+        </app-localstorage-document>
+        <app-localstorage-document key="secretsPanelOpen" data="{{_secretsPanelOpen}}">
+        </app-localstorage-document>
+
         <!-- Server panel -->
         <ft-form-panel
-            title="FileThis Server"
+            heading="FileThis Server"
             class="form-panel"
-            content-shown="false"
+            content-shown={{_serverPanelOpen}}
         >
 
             <!-- Summary -->
@@ -95,7 +108,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 slot="summary"
                 style="font-family:'Roboto', sans-serif; font-size:9pt; padding-top:4px; color:#AAA; "
             >
-                [[serverDomain]]
+                [[_serverDomain]]
             </div>
 
             <!-- Test Server button -->
@@ -151,8 +164,9 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- API Credentials -->
         <ft-form-panel
-            title="API Credentials"
+            heading="API Credentials"
             class="form-panel"
+            content-shown={{_apiCredentialsPanelOpen}}
         >
 
             <!-- Test API credentials button -->
@@ -221,8 +235,10 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- User Account -->
         <ft-form-panel
-                title="User Account"
-                class="form-panel">
+            heading="User Account"
+            class="form-panel"
+            content-shown={{_userAccountPanelOpen}}
+        >
 
             <!-- Summary -->
             <div
@@ -305,8 +321,9 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- User Access Token -->
         <ft-form-panel
-            title="User Access Token"
+            heading="User Access Token"
             class="form-panel"
+            content-shown={{_userAccessTokenPanelOpen}}
         >
 
             <!-- Test Token button -->
@@ -400,9 +417,9 @@ An element that allows partner admins to create user accounts for testing. Also 
 
         <!-- Secrets -->
         <ft-form-panel
-            title="Secrets"
+            heading="Secrets"
             class="form-panel"
-            content-shown="false"
+            content-shown={{_secretsPanelOpen}}
         >
 
             <!-- Summary -->
@@ -515,7 +532,7 @@ An element that allows partner admins to create user accounts for testing. Also 
             observers:
             [
                 "_onSettingChanged(server, apiPath, apiKey, apiSecret, userAccountId, timeout, token)",
-                "_onInvalidChanged(_serverInvalid, _apiKeyInvalid, _apiKeySecretInvalid, _timeoutInvalid, _tokenInvalid)"
+                "_onInvalidChanged(_serverInvalid, _apiKeyInvalid, _apiSecretInvalid, _timeoutInvalid, _tokenInvalid)"
             ],
 
 
@@ -622,7 +639,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 },
 
                 /** True when the API secret value is invalid. */
-                _apiKeySecretInvalid: {
+                _apiSecretInvalid: {
                     type: Boolean,
                     value: false
                 },
@@ -719,6 +736,37 @@ An element that allows partner admins to create user accounts for testing. Also 
                     type: Boolean,
                     value: true
                 },
+
+                _serverPanelOpen:
+                {
+                    type: Object,
+                    notify: true,
+                    value: false,
+                },
+                _apiCredentialsPanelOpen:
+                {
+                    type: Object,
+                    notify: true,
+                    value: true,
+                },
+                _userAccountPanelOpen:
+                {
+                    type: Object,
+                    notify: true,
+                    value: true,
+                },
+                _userAccessTokenPanelOpen:
+                {
+                    type: Object,
+                    notify: true,
+                    value: true,
+                },
+                _secretsPanelOpen:
+                {
+                    type: Object,
+                    notify: true,
+                    value: true,
+                },
             },
 
 
@@ -743,7 +791,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 if (matches.length !== 2)
                     return;
                 var serverDomain = matches[1];
-                this.serverDomain = serverDomain;
+                this._serverDomain = serverDomain;
             },
 
             _showSecretsChanged: function()
@@ -957,7 +1005,7 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             _onViewUserAccountCodeButtonClicked: function(event, detail)
             {
-                this.$.codeWindow.resourceTitle = "User Account";
+                this.$.codeWindow.resourceHeading = "User Account";
                 this.$.codeWindow.operationName = "create";
                 this.$.codeWindow.resourceName = "account";
                 this.$.codeWindow.languageAndLibraryName = "python-requests";
@@ -972,7 +1020,7 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             _onViewUserAccessTokenCodeButtonClicked: function(event, detail)
             {
-                this.$.codeWindow.resourceTitle = "User Access Token";
+                this.$.codeWindow.resourceHeading = "User Access Token";
                 this.$.codeWindow.operationName = "create";
                 this.$.codeWindow.resourceName = "token";
                 this.$.codeWindow.languageAndLibraryName = "python-requests";
