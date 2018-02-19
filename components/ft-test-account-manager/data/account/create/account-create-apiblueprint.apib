@@ -1,0 +1,26 @@
+# POST /api/v1/accounts
+
++ Request (text/plain; charset=utf-8)
+
+    + Headers
+
+            Authorization: Basic {{API_CREDENTIALS}}
+
+    + Body
+
+            {
+                "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}"
+            }
+
++ Response 200 (application/json;charset=utf-8)
+
+    + Headers
+
+            Strict-Transport-Security: max-age=15768000
+            Vary: Accept-Encoding
+            Cache-Control: no-cache
+            Transfer-Encoding: chunked
+
+    + Body
+
+            {"id":24}

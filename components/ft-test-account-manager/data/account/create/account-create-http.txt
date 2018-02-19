@@ -1,0 +1,11 @@
+POST /api/v1/accounts HTTP/1.1
+Authorization: Basic {{API_CREDENTIALS}}
+Content-Type: text/plain; charset=utf-8
+Host: {{SERVER}}
+Connection: close
+User-Agent: Paw/3.1.5 (Macintosh; OS X/10.12.6) GCDHTTPRequest
+Content-Length: 64
+
+{
+  "partnerAccountId": "{{PARTNER_ACCOUNT_ID}}"
+}

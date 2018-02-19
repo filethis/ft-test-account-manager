@@ -1,0 +1,50 @@
+{
+  "name": "ft-test-account-manager",
+  "description": "An element that allows partner admins to create user accounts for testing. Also allows the creation of access tickets for the account.",
+  "main": "ft-test-account-manager.html",
+  "dependencies": {
+    "app-storage": "^2.0.2",
+    "ft-clipboard-behavior": "filethis/ft-clipboard-behavior#^0.0.6",
+    "ft-confirmation-dialog": "filethis/ft-confirmation-dialog#^0.0.20",
+    "ft-form-panel": "filethis/ft-form-panel#^0.0.3",
+    "ft-error-behavior": "filethis/ft-error-behavior#^0.0.18",
+    "ft-element-demo": "filethis/ft-element-demo#^0.0.11",
+    "ft-http-behavior": "filethis/ft-http-behavior#^0.0.18",
+    "ft-labeled-icon-button": "filethis/ft-labeled-icon-button#^0.0.17",
+    "ft-url-param-behavior": "filethis/ft-url-param-behavior#^0.0.6",
+    "iron-a11y-keys": "PolymerElements/iron-a11y-keys#1 - 2",
+    "iron-validator-behavior": "PolymerElements/iron-validator-behavior#1 - 2",
+    "juicy-ace-editor": "^2.0.4",
+    "paper-checkbox": "PolymerElements/paper-checkbox#1 - 2",
+    "paper-dialog": "PolymerElements/paper-dialog#1 - 2",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#1 - 2",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#1 - 2",
+    "paper-icon-button": "PolymerElements/paper-icon-button#1 - 2",
+    "paper-input": "PolymerElements/paper-input#1 - 2",
+    "paper-tooltip": "PolymerElements/paper-tooltip#1 - 2",
+    "polymer": "Polymer/polymer#1.9 - 2",
+    "validator-js": "^7.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#1 - 2",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#1 - 2",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "resolutions": {
+    "polymer": "1.9 - 2",
+    "webcomponentsjs": "^1.0.0"
+  },
+  "homepage": "https://github.com/filethis/ft-test-account-manager",
+  "_release": "8e72cf74ec",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "8e72cf74ecea1a94b5f1da3009daca26ebab3b3e"
+  },
+  "_source": "https://github.com/filethis/ft-test-account-manager.git",
+  "_target": "master",
+  "_originalSource": "filethis/ft-test-account-manager",
+  "_direct": true
+}
