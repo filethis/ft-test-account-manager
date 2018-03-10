@@ -16,6 +16,7 @@ limitations under the License.
 
 
 <link rel="import" href="../app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../ft-clipboard-behavior/ft-clipboard-behavior.html">
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
@@ -281,6 +282,17 @@ An element that allows partner admins to create user accounts for testing. Also 
 
                 <div class="field-to-buttons-space"></div>
 
+                <!-- Copy button -->
+                <ft-labeled-icon-button
+                        id="copyUserAccountIdButton"
+                        icon="content-paste"
+                        label="Copy"
+                        disabled="[[!_canCopyUserAccountId]]"
+                        on-tap="_onCopyUserAccountIdButtonClicked">
+                </ft-labeled-icon-button>
+
+                <div class="inter-button-space"></div>
+
                 <!-- Code button -->
                 <ft-labeled-icon-button
                     id="viewUserAccountCodeButton"
@@ -342,7 +354,6 @@ An element that allows partner admins to create user accounts for testing. Also 
                 slot="content"
                 class="layout vertical"
             >
-
                 <!-- timeout -->
                 <paper-input
                     id="timeoutField"
@@ -375,6 +386,17 @@ An element that allows partner admins to create user accounts for testing. Also 
                     </paper-input>
 
                     <div class="field-to-buttons-space"></div>
+
+                    <!-- Copy button -->
+                    <ft-labeled-icon-button
+                            id="copyUserAccessTokenButton"
+                            icon="content-paste"
+                            label="Copy"
+                            disabled="[[!_canCopyUserAccessToken]]"
+                            on-tap="_onCopyUserAccessTokenButtonClicked">
+                    </ft-labeled-icon-button>
+
+                    <div class="inter-button-space"></div>
 
                     <!-- Code button -->
                     <ft-labeled-icon-button
@@ -526,7 +548,8 @@ An element that allows partner admins to create user accounts for testing. Also 
 
             behaviors: [
                 FileThis.ErrorBehavior,
-                FileThis.HttpBehavior
+                FileThis.HttpBehavior,
+                FileThis.ClipboardBehavior,
             ],
 
             observers:
@@ -1466,6 +1489,16 @@ An element that allows partner admins to create user accounts for testing. Also 
                 {
                     tooltip.hide();
                 }.bind(this), 2000)  // Show for two seconds
+            },
+
+            _onCopyUserAccountIdButtonClicked: function(event, detail)
+            {
+                this.copyTextToClipboard(this.userAccountId);
+            },
+
+            _onCopyUserAccessTokenButtonClicked: function(event, detail)
+            {
+                this.copyTextToClipboard(this.token);
             },
 
         });
