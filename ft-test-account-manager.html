@@ -19,8 +19,10 @@ limitations under the License.
 <link rel="import" href="../ft-clipboard-behavior/ft-clipboard-behavior.html">
 <link rel="import" href="../ft-confirmation-dialog/ft-confirmation-dialog.html">
 <link rel="import" href="../ft-error-behavior/ft-error-behavior.html">
+<link rel="import" href="../ft-form-panel/ft-form-panel.html">
 <link rel="import" href="../ft-http-behavior/ft-http-behavior.html">
 <link rel="import" href="../ft-labeled-icon-button/ft-labeled-icon-button.html">
+<link rel="import" href="../ft-test-account-manager/ft-code-window.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -30,8 +32,6 @@ limitations under the License.
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../polymer/lib/utils/debounce.html">
-<link rel="import" href="../ft-form-panel/ft-form-panel.html">
-<link rel="import" href="ft-code-window.html">
 <link rel="import" href="validator-js-validator.html">
 
 
@@ -285,7 +285,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                 <!-- Copy button -->
                 <ft-labeled-icon-button
                         id="copyUserAccountIdButton"
-                        icon="content-paste"
+                        icon="content-copy"
                         label="Copy"
                         disabled="[[!_canCopyUserAccountId]]"
                         on-tap="_onCopyUserAccountIdButtonClicked">
@@ -390,7 +390,7 @@ An element that allows partner admins to create user accounts for testing. Also 
                     <!-- Copy button -->
                     <ft-labeled-icon-button
                             id="copyUserAccessTokenButton"
-                            icon="content-paste"
+                            icon="content-copy"
                             label="Copy"
                             disabled="[[!_canCopyUserAccessToken]]"
                             on-tap="_onCopyUserAccessTokenButtonClicked">
