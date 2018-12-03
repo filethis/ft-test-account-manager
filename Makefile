@@ -1,7 +1,7 @@
 # Project configuration
 NAME=ft-test-account-manager
 SRC_DIR=
-VERSION=1.0.24
+VERSION=1.0.25
 LOCAL_PORT=3645
 GITHUB_USER=filethis
 GITHUB_USER_ABBREV=ft
