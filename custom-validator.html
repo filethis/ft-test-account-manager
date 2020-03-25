@@ -15,18 +15,20 @@ limitations under the License.
 -->
 
 
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-validator-behavior/iron-validator-behavior.html">
+<script type="module" src="../@polymer/polymer/polymer-legacy.js"></script>
+<script type="module" src="../@polymer/iron-validator-behavior/iron-validator-behavior.js"></script>
 
-<script>
-    Polymer({
+<script type="module">
+import '@polymer/polymer/polymer-legacy.js';
+import { IronValidatorBehavior } from '@polymer/iron-validator-behavior/iron-validator-behavior.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
 
-        is: 'custom-validator',
+    is: 'custom-validator',
 
-        behaviors: [
-            Polymer.IronValidatorBehavior
-        ]
+    behaviors: [
+        IronValidatorBehavior
+    ]
 
-    });
-
+});
 </script>
