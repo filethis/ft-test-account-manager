@@ -1,7 +1,7 @@
 {
   "description": "An element that allows partner admins to create user accounts for testing. Also allows the creation of access tickets for the account.",
-  "name": "filethis/ft-test-account-manager",
-  "version": "filethis/1.0.25",
+  "name": "ft-test-account-manager",
+  "version": "1.0.25",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
