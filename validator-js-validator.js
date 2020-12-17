@@ -23,7 +23,7 @@ import '@polymer/polymer/polymer-legacy.js';
 import { IronValidatorBehavior } from '@polymer/iron-validator-behavior/iron-validator-behavior.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { IronMeta } from '@polymer/iron-meta/iron-meta.js';
-import 'validator-js/validator.js';
+import 'validator/validator.js';
 Polymer({
 
     is: 'validator-js-validator',

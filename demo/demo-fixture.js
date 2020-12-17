@@ -11,7 +11,6 @@ An element that allows partner admins to create user accounts for testing. Also 
   from HTML and may be out of place here. Review them and
   then delete this comment!
 */
-import 'ft-element-demo/ft-element-demo.js';
 
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import '@polymer/polymer/polymer-legacy.js';
