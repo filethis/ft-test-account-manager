@@ -40,7 +40,7 @@
     "@polymer/paper-input": "^3.0.0",
     "@polymer/paper-tooltip": "^3.0.0",
     "@polymer/polymer": "^3.0.0",
-    "ft-clipboard-behavior": "file:.yalc/ft-clipboard-behavior",
+    "@filethis/ft-clipboard-behavior": "^1.0.10",
     "ft-confirmation-dialog": "file:.yalc/ft-confirmation-dialog",
     "ft-element-demo": "file:.yalc/ft-element-demo",
     "ft-error-behavior": "file:.yalc/ft-error-behavior",
@@ -55,5 +55,21 @@
     "@polymer/iron-test-helpers": "^3.0.0",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "wct-browser-legacy": "^1.0.1"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filethis/ft-test-account-manager.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/filethis/ft-test-account-manager/issues"
+  },
+  "homepage": "https://github.com/filethis/ft-test-account-manager#readme"
 }
