@@ -14,7 +14,7 @@
     "ft-url-param-behavior": "filethis/ft-url-param-behavior#^1.0.10",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#2.1.2",
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#2.1.0",
-    "juicy-ace-editor": "^2.0.4",
+    "@filethis/juicy-ace-editor": "^2.0.5-es6",
     "paper-checkbox": "PolymerElements/paper-checkbox#2.0.4",
     "paper-dialog": "PolymerElements/paper-dialog#2.1.1",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#2.2.1",

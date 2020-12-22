@@ -25,14 +25,14 @@ An element that provides a configurable alert or confirmation dialog that return
   from HTML and may be out of place here. Review them and
   then delete this comment!
 */
-import 'ft-clipboard-behavior/ft-clipboard-behavior.js';
+import '@filethis/ft-clipboard-behavior/ft-clipboard-behavior.js';
 
-import 'ft-error-behavior/ft-error-behavior.js';
-import 'ft-http-behavior/ft-http-behavior.js';
-import 'ft-labeled-icon-button/ft-labeled-icon-button.js';
-import 'ft-url-param-behavior/ft-url-param-behavior.js';
+import '@filethis/ft-error-behavior/ft-error-behavior.js';
+import '@filethis/ft-http-behavior/ft-http-behavior.js';
+import '@filethis/ft-labeled-icon-button/ft-labeled-icon-button.js';
+import '@filethis/ft-url-param-behavior/ft-url-param-behavior.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import 'juicy-ace-editor/juicy-ace-editor.js';
+import '@filethis/juicy-ace-editor/juicy-ace-editor-module.js';
 import '@polymer/marked-element/marked-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';

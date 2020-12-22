@@ -27,12 +27,12 @@ An element that allows partner admins to create user accounts for testing. Also 
 */
 import '@polymer/app-storage/app-localstorage/app-localstorage-document.js';
 
-import 'ft-clipboard-behavior/ft-clipboard-behavior.js';
-import 'ft-confirmation-dialog/ft-confirmation-dialog.js';
-import 'ft-error-behavior/ft-error-behavior.js';
-import 'ft-form-panel/ft-form-panel.js';
-import 'ft-http-behavior/ft-http-behavior.js';
-import 'ft-labeled-icon-button/ft-labeled-icon-button.js';
+import '@filethis/ft-clipboard-behavior/ft-clipboard-behavior.js';
+import '@filethis/ft-confirmation-dialog/ft-confirmation-dialog.js';
+import '@filethis/ft-error-behavior/ft-error-behavior.js';
+import '@filethis/ft-form-panel/ft-form-panel.js';
+import '@filethis/ft-http-behavior/ft-http-behavior.js';
+import '@filethis/ft-labeled-icon-button/ft-labeled-icon-button.js';
 import './ft-code-window.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import '@polymer/iron-icon/iron-icon.js';

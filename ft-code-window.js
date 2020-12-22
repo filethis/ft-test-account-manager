@@ -28,7 +28,7 @@ An element that provides a configurable alert or confirmation dialog that return
 import './ft-code-panel.js';
 
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
-import 'juicy-ace-editor/juicy-ace-editor.js';
+import '@filethis/juicy-ace-editor/juicy-ace-editor-module.js';
 import '@polymer/marked-element/marked-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-dialog/paper-dialog.js';
